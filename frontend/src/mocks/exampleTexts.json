@@ -1,0 +1,246 @@
+{
+  "examples": [
+    {
+      "id": 1,
+      "original_text": "Cotton curtains, while seemingly simple, offer a nuanced blend of practicality and aesthetic refinement that makes them an enduring choice in interior design. Their natural fibers create a breathable, temperature-balancing barrier that subtly filters light, softening a room's ambience without fully obscuring outdoor illumination. This organic texture lends an understated elegance that integrates seamlessly into both contemporary and traditional spaces. Beyond appearance, cotton's washability and durability contribute to its long-term value; however, these virtues are tempered by its propensity to wrinkle and its vulnerability to gradual fading when exposed to sustained sunlight. Unlined cotton panels, in particular, struggle to achieve the depth of light control provided by synthetic or blackout alternatives, which may be a consideration for users seeking heightened privacy or darkness. Nonetheless, the tactile warmth, visual softness, and ecological appeal of cotton make it a sophisticated option for homeowners who prioritize comfort, natural materials, and a subtle interplay of light and texture.",
+      "tagged_phrases": [
+        {
+          "phrase": "nuanced blend",
+          "tag": "not_familiar",
+          "start_index": 49,
+          "end_index": 62,
+          "rephrased_versions": [
+            { "replacement": "careful mix", "length": 11 },
+            { "replacement": "fine combination", "length": 16 }
+          ]
+        },
+        {
+          "phrase": "practicality",
+          "tag": "somewhat_familiar",
+          "start_index": 66,
+          "end_index": 78,
+          "rephrased_versions": [
+            { "replacement": "usefulness in everyday life", "length": 27 },
+            { "replacement": "how easy it is to use", "length": 21 }
+          ]
+        },
+        {
+          "phrase": "aesthetic refinement",
+          "tag": "not_familiar",
+          "start_index": 83,
+          "end_index": 103,
+          "rephrased_versions": [
+            { "replacement": "very neat and stylish look", "length": 26 },
+            { "replacement": "polished, good-looking style", "length": 27 }
+          ]
+        },
+        {
+          "phrase": "interior design",
+          "tag": "somewhat_familiar",
+          "start_index": 142,
+          "end_index": 157,
+          "rephrased_versions": [
+            { "replacement": "how the inside of a room is arranged and decorated", "length": 53 },
+            { "replacement": "the way a room looks and is set up", "length": 32 }
+          ]
+        },
+        {
+          "phrase": "breathable",
+          "tag": "familiar",
+          "start_index": 189,
+          "end_index": 199,
+          "rephrased_versions": [
+            { "replacement": "lets air pass through", "length": 20 },
+            { "replacement": "allows air to move easily", "length": 25 }
+          ]
+        },
+        {
+          "phrase": "temperature-balancing barrier",
+          "tag": "not_familiar",
+          "start_index": 201,
+          "end_index": 231,
+          "rephrased_versions": [
+            { "replacement": "layer that helps keep the room not too hot or cold", "length": 56 },
+            { "replacement": "fabric that helps even out the room temperature", "length": 50 }
+          ]
+        },
+        {
+          "phrase": "ambience",
+          "tag": "somewhat_familiar",
+          "start_index": 277,
+          "end_index": 285,
+          "rephrased_versions": [
+            { "replacement": "overall feeling in the room", "length": 28 },
+            { "replacement": "mood or atmosphere of the space", "length": 33 }
+          ]
+        },
+        {
+          "phrase": "organic texture",
+          "tag": "somewhat_familiar",
+          "start_index": 337,
+          "end_index": 352,
+          "rephrased_versions": [
+            { "replacement": "natural feel of the fabric", "length": 27 },
+            { "replacement": "surface that feels natural and real", "length": 36 }
+          ]
+        },
+        {
+          "phrase": "understated elegance",
+          "tag": "not_familiar",
+          "start_index": 362,
+          "end_index": 382,
+          "rephrased_versions": [
+            { "replacement": "simple but classy look", "length": 22 },
+            { "replacement": "quiet, gentle kind of beauty", "length": 30 }
+          ]
+        },
+        {
+          "phrase": "washability and durability",
+          "tag": "familiar",
+          "start_index": 485,
+          "end_index": 510,
+          "rephrased_versions": [
+            { "replacement": "easy to wash and long-lasting", "length": 28 },
+            { "replacement": "can be cleaned often and still stay strong", "length": 44 }
+          ]
+        },
+        {
+          "phrase": "propensity to wrinkle",
+          "tag": "somewhat_familiar",
+          "start_index": 590,
+          "end_index": 611,
+          "rephrased_versions": [
+            { "replacement": "tends to get creased easily", "length": 27 },
+            { "replacement": "likely to show wrinkles quickly", "length": 31 }
+          ]
+        },
+        {
+          "phrase": "vulnerability to gradual fading",
+          "tag": "somewhat_familiar",
+          "start_index": 620,
+          "end_index": 651,
+          "rephrased_versions": [
+            { "replacement": "can slowly lose its color over time", "length": 36 },
+            { "replacement": "may gently fade if it gets a lot of sun", "length": 40 }
+          ]
+        },
+        {
+          "phrase": "synthetic or blackout alternatives",
+          "tag": "somewhat_familiar",
+          "start_index": 785,
+          "end_index": 819,
+          "rephrased_versions": [
+            { "replacement": "other curtains made from man-made or blackout fabrics", "length": 57 },
+            { "replacement": "different options like man-made or fully darkening curtains", "length": 63 }
+          ]
+        },
+        {
+          "phrase": "tactile warmth",
+          "tag": "not_familiar",
+          "start_index": 917,
+          "end_index": 931,
+          "rephrased_versions": [
+            { "replacement": "pleasant, cozy feel to the touch", "length": 33 },
+            { "replacement": "feels warm and comforting when you touch it", "length": 47 }
+          ]
+        },
+        {
+          "phrase": "ecological appeal",
+          "tag": "somewhat_familiar",
+          "start_index": 954,
+          "end_index": 971,
+          "rephrased_versions": [
+            { "replacement": "good for the environment", "length": 24 },
+            { "replacement": "environment-friendly advantage", "length": 31 }
+          ]
+        },
+        {
+          "phrase": "subtle interplay of light and texture",
+          "tag": "not_familiar",
+          "start_index": 1077,
+          "end_index": 1114,
+          "rephrased_versions": [
+            { "replacement": "gentle way light and fabric surface work together", "length": 52 },
+            { "replacement": "soft mix of how light falls on the fabric and how it feels", "length": 59 }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "original_text": "Over the past year, we've worked with dozens of teams building large language model (LLM) agents across industries. Consistently, the most successful implementations weren't using complex frameworks or specialized libraries. Instead, they were building with simple, composable patterns. In this post, we share what we've learned from working with our customers and building agents ourselves, and give practical advice for developers on building effective agents.",
+      "tagged_phrases": [
+        {
+          "phrase": "large language model",
+          "tag": "not_familiar",
+          "start_index": 69,
+          "end_index": 89,
+          "rephrased_versions": [
+            { "replacement": "advanced AI system", "length": 18 },
+            { "replacement": "smart text program", "length": 18 }
+          ]
+        },
+        {
+          "phrase": "LLM agents",
+          "tag": "not_familiar",
+          "start_index": 91,
+          "end_index": 101,
+          "rephrased_versions": [
+            { "replacement": "AI helpers", "length": 10 },
+            { "replacement": "smart assistants", "length": 16 }
+          ]
+        },
+        {
+          "phrase": "implementations",
+          "tag": "familiar",
+          "start_index": 151,
+          "end_index": 166,
+          "rephrased_versions": [
+            { "replacement": "solutions", "length": 9 },
+            { "replacement": "versions", "length": 8 }
+          ]
+        },
+        {
+          "phrase": "complex frameworks",
+          "tag": "somewhat_familiar",
+          "start_index": 182,
+          "end_index": 200,
+          "rephrased_versions": [
+            { "replacement": "complicated tools", "length": 17 },
+            { "replacement": "heavy systems", "length": 13 }
+          ]
+        },
+        {
+          "phrase": "specialized libraries",
+          "tag": "somewhat_familiar",
+          "start_index": 204,
+          "end_index": 225,
+          "rephrased_versions": [
+            { "replacement": "specific tools", "length": 14 },
+            { "replacement": "custom packages", "length": 15 }
+          ]
+        },
+        {
+          "phrase": "composable patterns",
+          "tag": "somewhat_familiar",
+          "start_index": 264,
+          "end_index": 283,
+          "rephrased_versions": [
+            { "replacement": "reusable designs", "length": 16 },
+            { "replacement": "building blocks", "length": 15 }
+          ]
+        },
+        {
+          "phrase": "practical advice",
+          "tag": "familiar",
+          "start_index": 399,
+          "end_index": 415,
+          "rephrased_versions": [
+            { "replacement": "useful tips", "length": 11 },
+            { "replacement": "helpful guidance", "length": 16 }
+          ]
+        }
+      ]
+    }
+  ]
+}

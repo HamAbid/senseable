@@ -61,6 +61,10 @@ local_settings.py
 db.sqlite3
 db.sqlite3-journal
 
+# SenseAble SQLite database
+senseable.db
+*.db
+
 # Flask stuff:
 instance/
 .webassets-cache
@@ -143,6 +147,22 @@ venv/
 ENV/
 env.bak/
 venv.bak/
+backend/venv/
+
+# Node.js / Frontend
+frontend/node_modules/
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+.pnpm-store/
+dist/
+.vite/
+
+# Documentation
+local_docs/
+docs/build/
 
 # Spyder project settings
 .spyderproject
