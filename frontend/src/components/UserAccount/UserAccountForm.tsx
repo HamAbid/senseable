@@ -285,103 +285,111 @@ const UserAccountForm: React.FC<UserAccountFormProps> = ({ isLoginMode = false }
                     />
                   </div>
 
-                  <div>
-                    <label htmlFor="ageRange" className="block text-sm font-medium text-gray-700 mb-1">
-                      Age Range <span className="text-red-500">*</span>
-                    </label>
-                    <select
-                      id="ageRange"
-                      value={formData.ageRange}
-                      onChange={(e) => setFormData({ ...formData, ageRange: e.target.value })}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
-                      required
-                    >
-                      <option value="">Select age range</option>
-                      <option value="18-24">18–24</option>
-                      <option value="25-34">25–34</option>
-                      <option value="35-44">35–44</option>
-                      <option value="45-54">45–54</option>
-                      <option value="55+">55+</option>
-                    </select>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <label htmlFor="ageRange" className="block text-sm font-medium text-gray-700 mb-1">
+                        Age Range <span className="text-red-500">*</span>
+                      </label>
+                      <select
+                        id="ageRange"
+                        value={formData.ageRange}
+                        onChange={(e) => setFormData({ ...formData, ageRange: e.target.value })}
+                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
+                        required
+                      >
+                        <option value="">Select age range</option>
+                        <option value="18-24">18–24</option>
+                        <option value="25-34">25–34</option>
+                        <option value="35-44">35–44</option>
+                        <option value="45-54">45–54</option>
+                        <option value="55+">55+</option>
+                      </select>
+                    </div>
+
+                    <div>
+                      <label htmlFor="gender" className="block text-sm font-medium text-gray-700 mb-1">
+                        Gender <span className="text-red-500">*</span>
+                      </label>
+                      <select
+                        id="gender"
+                        value={formData.gender}
+                        onChange={(e) => setFormData({ ...formData, gender: e.target.value })}
+                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
+                        required
+                      >
+                        <option value="">Select gender</option>
+                        <option value="male">Male</option>
+                        <option value="female">Female</option>
+                        <option value="others">Others</option>
+                        <option value="prefer-not-to-say">Prefer not to say</option>
+                      </select>
+                    </div>
                   </div>
 
-                  <div>
-                    <label htmlFor="gender" className="block text-sm font-medium text-gray-700 mb-1">
-                      Gender <span className="text-red-500">*</span>
-                    </label>
-                    <select
-                      id="gender"
-                      value={formData.gender}
-                      onChange={(e) => setFormData({ ...formData, gender: e.target.value })}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
-                      required
-                    >
-                      <option value="">Select gender</option>
-                      <option value="male">Male</option>
-                      <option value="female">Female</option>
-                      <option value="others">Others</option>
-                      <option value="prefer-not-to-say">Prefer not to say</option>
-                    </select>
-                  </div>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <label htmlFor="country" className="block text-sm font-medium text-gray-700 mb-1">
+                        Country <span className="text-red-500">*</span>
+                      </label>
+                      <select
+                        id="country"
+                        value={formData.country}
+                        onChange={(e) => setFormData({ ...formData, country: e.target.value })}
+                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
+                        required
+                      >
+                        <option value="">Select country</option>
+                        <option value="india">India</option>
+                        <option value="usa">United States</option>
+                        <option value="uk">United Kingdom</option>
+                        <option value="canada">Canada</option>
+                        <option value="australia">Australia</option>
+                        <option value="other">Other</option>
+                      </select>
+                    </div>
 
-                  <div>
-                    <label htmlFor="country" className="block text-sm font-medium text-gray-700 mb-1">
-                      Country <span className="text-red-500">*</span>
-                    </label>
-                    <select
-                      id="country"
-                      value={formData.country}
-                      onChange={(e) => setFormData({ ...formData, country: e.target.value })}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
-                      required
-                    >
-                      <option value="">Select country</option>
-                      <option value="india">India</option>
-                      <option value="usa">United States</option>
-                      <option value="uk">United Kingdom</option>
-                      <option value="canada">Canada</option>
-                      <option value="australia">Australia</option>
-                      <option value="other">Other</option>
-                    </select>
-                  </div>
-
-                  <div>
-                    <label htmlFor="languagePreference" className="block text-sm font-medium text-gray-700 mb-1">
-                      Language Preference <span className="text-red-500">*</span>
-                    </label>
-                    <select
-                      id="languagePreference"
-                      value={formData.languagePreference}
-                      onChange={(e) => setFormData({ ...formData, languagePreference: e.target.value })}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
-                      required
-                    >
-                      <option value="">Select language</option>
-                      <option value="english">English</option>
-                      <option value="hindi">Hindi</option>
-                      <option value="bengali">Bengali</option>
-                    </select>
+                    <div>
+                      <label htmlFor="languagePreference" className="block text-sm font-medium text-gray-700 mb-1">
+                        Language Preference <span className="text-red-500">*</span>
+                      </label>
+                      <select
+                        id="languagePreference"
+                        value={formData.languagePreference}
+                        onChange={(e) => setFormData({ ...formData, languagePreference: e.target.value })}
+                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
+                        required
+                      >
+                        <option value="">Select language</option>
+                        <option value="english">English</option>
+                        <option value="hindi">Hindi</option>
+                        <option value="bengali">Bengali</option>
+                      </select>
+                    </div>
                   </div>
                 </div>
 
-                {/* Accessibility Needs - Two-level selection */}
+                {/* Accessibility Needs - Label selection with dropdown */}
                 <div className="space-y-3">
                   <div>
-                    <label htmlFor="accessibilityCategory" className="block text-sm font-medium text-gray-700 mb-1">
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
                       Do you have any accessibility needs? <span className="text-red-500">*</span>
                     </label>
-                    <select
-                      id="accessibilityCategory"
-                      value={formData.accessibilityCategory}
-                      onChange={(e) => handleCategoryChange(e.target.value)}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
-                      required
-                    >
-                      <option value="">Select category</option>
+                    <div className="flex flex-wrap gap-2">
                       {accessibilityOptions.map(option => (
-                        <option key={option.id} value={option.id}>{option.label}</option>
+                        <button
+                          key={option.id}
+                          type="button"
+                          onClick={() => handleCategoryChange(option.id)}
+                          className={`px-4 py-2 text-sm rounded-lg transition ${
+                            formData.accessibilityCategory === option.id
+                              ? 'bg-primary text-white'
+                              : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                          }`}
+                        >
+                          {option.label}
+                        </button>
                       ))}
-                    </select>
+                    </div>
                   </div>
 
                   {/* Sub-option dropdown - only show if category is selected and not 'none' */}
@@ -418,7 +426,7 @@ const UserAccountForm: React.FC<UserAccountFormProps> = ({ isLoginMode = false }
                     value={formData.additionalSupport}
                     onChange={(e) => setFormData({ ...formData, additionalSupport: e.target.value })}
                     placeholder="Share any additional information that would help us better support your needs..."
-                    rows={4}
+                    rows={2}
                     className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent resize-none"
                   />
                 </div>
@@ -440,11 +448,11 @@ const UserAccountForm: React.FC<UserAccountFormProps> = ({ isLoginMode = false }
                 </div>
 
                 {/* Proceed Button */}
-                <div className="pt-6">
+                <div className="pt-6 flex justify-center">
                   <Button
                     type="submit"
                     disabled={loading || !isFormValid()}
-                    className="w-full"
+                    className="px-12"
                   >
                     {loading ? 'Processing...' : 'Proceed'}
                   </Button>
