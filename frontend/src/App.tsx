@@ -11,7 +11,6 @@ const App: React.FC = () => {
       <Router>
         <Routes>
           <Route path="/login" element={<UserAccountPage />} />
-          <Route path="/profile" element={<UserAccountPage />} />
           <Route path="/rephrase" element={<RephraseTextPage />} />
           <Route path="/" element={<Navigate to="/login" replace />} />
           <Route path="*" element={<Navigate to="/login" replace />} />

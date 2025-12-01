@@ -47,11 +47,13 @@ export const getHighlightsFromExample = (exampleId: number = 1): TextHighlight[]
  */
 export const getSuggestionsFromExample = (exampleId: number = 1): Suggestion[] => {
   const example = getExampleById(exampleId);
-  
+
   return example.tagged_phrases.map(phrase => ({
     phrase: phrase.phrase,
     alternatives: phrase.rephrased_versions.map(v => v.replacement),
     position: { start: phrase.start_index, end: phrase.end_index },
+    tag: tagMapping[phrase.tag],
+    explanation: phrase.explanation || 'Consider using simpler language for better clarity.',
   }));
 };
 

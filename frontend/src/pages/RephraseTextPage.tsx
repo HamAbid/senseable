@@ -1,10 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useUser } from '../context/UserContext';
 import Header from '../components/Common/Header';
 import Button from '../components/Common/Button';
 import TextEditor from '../components/RephraseText/TextEditor';
-import SuggestionsPanel from '../components/RephraseText/SuggestionsPanel';
+import SuggestionsPanel, { SuggestionsPanelRef } from '../components/RephraseText/SuggestionsPanel';
+import ProfileEdit from '../components/RephraseText/ProfileEdit';
 import { TextHighlight, Suggestion, FamiliarityLevel } from '../types';
 import { defaultColorPalette } from '../utils/colorPalettes';
 import { mockAnalyzeText, mockGetSuggestions } from '../mocks/analyzeData';
@@ -18,12 +19,17 @@ const RephraseTextPage: React.FC = () => {
   const [suggestions, setSuggestions] = useState<Suggestion[]>([]);
   const [isAnalyzed, setIsAnalyzed] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [hoveredHighlightId, setHoveredHighlightId] = useState<string | null>(null);
+  const [acceptedReplacements, setAcceptedReplacements] = useState<Map<number, string>>(new Map());
+  const [activeTab, setActiveTab] = useState<'tags' | 'profile'>('tags');
+
+  const suggestionsPanelRef = useRef<SuggestionsPanelRef>(null);
 
   const colorPalette = preferences?.color_palette || defaultColorPalette;
 
   useEffect(() => {
     if (!user) {
-      navigate('/profile');
+      navigate('/login');
     }
   }, [user, navigate]);
 
@@ -48,7 +54,7 @@ const RephraseTextPage: React.FC = () => {
     if (!originalText.trim()) return;
 
     setLoading(true);
-    
+
     // Simulate API call with mock data
     setTimeout(() => {
       const analyzed = mockAnalyzeText(originalText);
@@ -93,6 +99,57 @@ const RephraseTextPage: React.FC = () => {
     setHighlights([]);
     setSuggestions([]);
     setIsAnalyzed(false);
+    setAcceptedReplacements(new Map());
+    setHoveredHighlightId(null);
+  };
+
+  const handleAccept = (phrase: string, replacement: string) => {
+    // Find the highlight for this phrase
+    const highlight = highlights.find(h => h.text === phrase);
+    if (!highlight) return;
+
+    // Replace the text
+    const newText = originalText.replace(phrase, replacement);
+    setOriginalText(newText);
+
+    // Calculate the length difference
+    const lengthDiff = replacement.length - phrase.length;
+
+    // Update all subsequent highlights' positions
+    const updatedHighlights = highlights
+      .filter(h => h.id !== highlight.id) // Remove the accepted highlight
+      .map(h => {
+        if (h.start > highlight.start) {
+          // Adjust positions for highlights after the replaced text
+          return {
+            ...h,
+            start: h.start + lengthDiff,
+            end: h.end + lengthDiff,
+          };
+        }
+        return h;
+      });
+
+    setHighlights(updatedHighlights);
+
+    // Update suggestions to remove the accepted one
+    setSuggestions(suggestions.filter(s => s.phrase !== phrase));
+  };
+
+  const handleIgnore = (phrase: string) => {
+    // Find and remove the highlight
+    const highlight = highlights.find(h => h.text === phrase);
+    if (highlight) {
+      setHighlights(highlights.filter(h => h.id !== highlight.id));
+    }
+
+    // Remove the suggestion
+    setSuggestions(suggestions.filter(s => s.phrase !== phrase));
+  };
+
+  const handleHighlightClick = (highlightId: string) => {
+    // Scroll to the corresponding suggestion
+    suggestionsPanelRef.current?.scrollToSuggestion(highlightId);
   };
 
   if (!user) {
@@ -140,6 +197,10 @@ const RephraseTextPage: React.FC = () => {
                   onUpdateHighlight={handleUpdateHighlight}
                   onRemoveHighlight={handleRemoveHighlight}
                   colorPalette={colorPalette}
+                  hoveredHighlightId={hoveredHighlightId}
+                  onHighlightHover={setHoveredHighlightId}
+                  acceptedReplacements={acceptedReplacements}
+                  onHighlightClick={handleHighlightClick}
                 />
               )}
 
@@ -162,94 +223,113 @@ const RephraseTextPage: React.FC = () => {
               )}
             </div>
 
-            {/* Suggestions Panel - Below main editor when suggestions exist */}
+          </div>
+
+          {/* Sidebar */}
+          <div className="space-y-4 lg:sticky lg:top-8 lg:max-h-[calc(100vh-6rem)] lg:flex lg:flex-col">
+            {/* Tabs */}
+            <div className="bg-white rounded-lg shadow">
+              <div className="flex border-b">
+                <button
+                  onClick={() => setActiveTab('tags')}
+                  className={`flex-1 px-4 py-3 text-sm font-medium transition ${
+                    activeTab === 'tags'
+                      ? 'text-primary border-b-2 border-primary'
+                      : 'text-gray-600 hover:text-gray-800'
+                  }`}
+                >
+                  Tags
+                </button>
+                <button
+                  onClick={() => setActiveTab('profile')}
+                  className={`flex-1 px-4 py-3 text-sm font-medium transition ${
+                    activeTab === 'profile'
+                      ? 'text-primary border-b-2 border-primary'
+                      : 'text-gray-600 hover:text-gray-800'
+                  }`}
+                >
+                  Update Profile
+                </button>
+              </div>
+            </div>
+
+            {/* Tab Content */}
+            <div className="flex-1 overflow-y-auto">
+              {activeTab === 'tags' && (
+                <div className="space-y-4">
+                  {/* Tag Summary - Compact version at top */}
+                  {isAnalyzed && (
+              <div className="bg-white rounded-lg shadow p-3 lg:sticky lg:top-0 lg:z-10">
+                <h3 className="text-sm font-semibold text-gray-800 mb-2">Tag Summary</h3>
+                <div className="space-y-1.5">
+                  <div className="flex items-center justify-between p-2 rounded"
+                       style={{ backgroundColor: `${colorPalette['not-familiar']}10` }}>
+                    <div className="flex items-center gap-2">
+                      <div className="w-3 h-3 rounded"
+                           style={{ backgroundColor: colorPalette['not-familiar'] }}></div>
+                      <span className="text-xs font-medium">Not Familiar</span>
+                    </div>
+                    <span className="text-sm font-bold">{tagCounts['not-familiar'] || 0}</span>
+                  </div>
+
+                  <div className="flex items-center justify-between p-2 rounded"
+                       style={{ backgroundColor: `${colorPalette['somewhat-familiar']}10` }}>
+                    <div className="flex items-center gap-2">
+                      <div className="w-3 h-3 rounded"
+                           style={{ backgroundColor: colorPalette['somewhat-familiar'] }}></div>
+                      <span className="text-xs font-medium">Somewhat Familiar</span>
+                    </div>
+                    <span className="text-sm font-bold">{tagCounts['somewhat-familiar'] || 0}</span>
+                  </div>
+
+                  <div className="flex items-center justify-between p-2 rounded"
+                       style={{ backgroundColor: `${colorPalette['familiar']}10` }}>
+                    <div className="flex items-center gap-2">
+                      <div className="w-3 h-3 rounded"
+                           style={{ backgroundColor: colorPalette['familiar'] }}></div>
+                      <span className="text-xs font-medium">Familiar</span>
+                    </div>
+                    <span className="text-sm font-bold">{tagCounts['familiar'] || 0}</span>
+                  </div>
+                </div>
+
+                <div className="mt-2 pt-2 border-t border-gray-200">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-semibold text-gray-700">Total Tagged</span>
+                    <span className="text-lg font-bold text-primary">{highlights.length}</span>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Rephrase Suggestions - Below summary */}
             {suggestions.length > 0 && (
-              <div className="bg-white rounded-lg shadow p-6">
-                <h2 className="text-xl font-semibold text-gray-800 mb-4">
+              <div className="bg-white rounded-lg shadow p-4">
+                <h3 className="text-sm font-semibold text-gray-800 mb-3">
                   Rephrase Suggestions
-                </h2>
+                </h3>
                 <SuggestionsPanel
+                  ref={suggestionsPanelRef}
                   suggestions={suggestions}
-                  onSelectSuggestion={(suggestion, original) => {
-                    const newText = originalText.replace(original, suggestion);
-                    setOriginalText(newText);
-                  }}
+                  highlights={highlights}
+                  onAccept={handleAccept}
+                  onIgnore={handleIgnore}
+                  onHover={setHoveredHighlightId}
+                  hoveredId={hoveredHighlightId}
                   colorPalette={colorPalette}
                 />
               </div>
             )}
-          </div>
+                </div>
+              )}
 
-          {/* Sidebar */}
-          <div className="space-y-6">
-            {/* Tag Summary */}
-            {isAnalyzed && (
-              <div className="bg-white rounded-lg shadow p-4">
-                <h3 className="text-lg font-semibold text-gray-800 mb-4">Tag Summary</h3>
-                <div className="space-y-3">
-                  <div className="flex items-center justify-between p-3 rounded-lg" 
-                       style={{ backgroundColor: `${colorPalette['not-familiar']}15` }}>
-                    <div className="flex items-center gap-2">
-                      <div className="w-4 h-4 rounded" 
-                           style={{ backgroundColor: colorPalette['not-familiar'] }}></div>
-                      <span className="text-sm font-medium">Not Familiar</span>
-                    </div>
-                    <span className="text-lg font-bold">{tagCounts['not-familiar'] || 0}</span>
-                  </div>
-                  
-                  <div className="flex items-center justify-between p-3 rounded-lg"
-                       style={{ backgroundColor: `${colorPalette['somewhat-familiar']}15` }}>
-                    <div className="flex items-center gap-2">
-                      <div className="w-4 h-4 rounded"
-                           style={{ backgroundColor: colorPalette['somewhat-familiar'] }}></div>
-                      <span className="text-sm font-medium">Somewhat Familiar</span>
-                    </div>
-                    <span className="text-lg font-bold">{tagCounts['somewhat-familiar'] || 0}</span>
-                  </div>
-                  
-                  <div className="flex items-center justify-between p-3 rounded-lg"
-                       style={{ backgroundColor: `${colorPalette['familiar']}15` }}>
-                    <div className="flex items-center gap-2">
-                      <div className="w-4 h-4 rounded"
-                           style={{ backgroundColor: colorPalette['familiar'] }}></div>
-                      <span className="text-sm font-medium">Familiar</span>
-                    </div>
-                    <span className="text-lg font-bold">{tagCounts['familiar'] || 0}</span>
-                  </div>
+              {activeTab === 'profile' && (
+                <div className="bg-white rounded-lg shadow p-4">
+                  <h3 className="text-sm font-semibold text-gray-800 mb-4">Update Profile</h3>
+                  <ProfileEdit />
                 </div>
-                
-                <div className="mt-4 pt-4 border-t border-gray-200">
-                  <div className="flex items-center justify-between">
-                    <span className="font-semibold text-gray-700">Total Tagged</span>
-                    <span className="text-xl font-bold text-primary">{highlights.length}</span>
-                  </div>
-                </div>
-              </div>
-            )}
-
-            {/* Color Legend */}
-            {isAnalyzed && (
-              <div className="bg-white rounded-lg shadow p-4">
-                <h3 className="text-lg font-semibold text-gray-800 mb-3">Color Legend</h3>
-                <div className="space-y-2 text-sm">
-                  <div className="flex items-center gap-2">
-                    <div className="w-6 h-6 rounded" 
-                         style={{ backgroundColor: colorPalette['not-familiar'] }}></div>
-                    <span>Not at all familiar (Red)</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <div className="w-6 h-6 rounded"
-                         style={{ backgroundColor: colorPalette['somewhat-familiar'] }}></div>
-                    <span>Somewhat familiar (Yellow)</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <div className="w-6 h-6 rounded"
-                         style={{ backgroundColor: colorPalette['familiar'] }}></div>
-                    <span>Familiar (Green)</span>
-                  </div>
-                </div>
-              </div>
-            )}
+              )}
+            </div>
           </div>
         </div>
       </div>

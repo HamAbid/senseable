@@ -78,6 +78,8 @@ export interface Suggestion {
   phrase: string;
   alternatives: string[];
   position: { start: number; end: number };
+  tag?: FamiliarityLevel;
+  explanation?: string;
 }
 
 export interface RephraseHistory {

@@ -9,6 +9,10 @@ interface TextEditorProps {
   onUpdateHighlight?: (id: string, level: FamiliarityLevel) => void;
   onRemoveHighlight?: (id: string) => void;
   colorPalette: any;
+  hoveredHighlightId?: string | null;
+  onHighlightHover?: (id: string | null) => void;
+  acceptedReplacements?: Map<number, string>;
+  onHighlightClick?: (highlightId: string) => void;
 }
 
 // SVG Pattern definitions for accessibility
@@ -48,6 +52,10 @@ const TextEditor: React.FC<TextEditorProps> = ({
   onUpdateHighlight,
   onRemoveHighlight,
   colorPalette,
+  hoveredHighlightId,
+  onHighlightHover,
+  acceptedReplacements = new Map(),
+  onHighlightClick,
 }) => {
   const [selectedText, setSelectedText] = useState<{ text: string; start: number; end: number } | null>(null);
   const [showTagMenu, setShowTagMenu] = useState(false);
@@ -64,8 +72,19 @@ const TextEditor: React.FC<TextEditorProps> = ({
       }
     };
 
+    const handleEscKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        setShowTagMenu(false);
+        setShowEditMenu(false);
+      }
+    };
+
     document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
+    document.addEventListener('keydown', handleEscKey);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener('keydown', handleEscKey);
+    };
   }, []);
 
   const handleTextSelect = () => {
@@ -103,7 +122,7 @@ const TextEditor: React.FC<TextEditorProps> = ({
 
   const handleHighlightClick = (e: React.MouseEvent, highlight: TextHighlight) => {
     e.stopPropagation();
-    
+
     const rect = (e.target as HTMLElement).getBoundingClientRect();
     setEditingHighlight(highlight);
     setMenuPosition({
@@ -112,6 +131,9 @@ const TextEditor: React.FC<TextEditorProps> = ({
     });
     setShowEditMenu(true);
     setShowTagMenu(false);
+
+    // Call the external click handler to scroll to suggestion
+    onHighlightClick?.(highlight.id);
   };
 
   const handleAddTag = (level: FamiliarityLevel) => {
@@ -148,11 +170,14 @@ const TextEditor: React.FC<TextEditorProps> = ({
   };
 
   const renderTextWithHighlights = () => {
-    if (highlights.length === 0) return text;
+    if (highlights.length === 0 && acceptedReplacements.size === 0) return text;
 
     const sortedHighlights = [...highlights].sort((a, b) => a.start - b.start);
     const parts: React.ReactNode[] = [];
     let lastIndex = 0;
+
+    // Combine highlights and accepted replacements for rendering
+    const acceptedPositions = Array.from(acceptedReplacements.keys());
 
     sortedHighlights.forEach((highlight, index) => {
       // Add text before highlight
@@ -169,16 +194,18 @@ const TextEditor: React.FC<TextEditorProps> = ({
       const backgroundColor = colorPalette[familiarityLevel];
       const textColor = colorPalette.textColors?.[familiarityLevel];
       const pattern = colorPalette.patterns?.[familiarityLevel];
-      
+      const isHovered = highlight.id === hoveredHighlightId;
+
       // Build background style with pattern overlay
       const backgroundStyle: React.CSSProperties = {
-        backgroundColor,
+        backgroundColor: isHovered ? '#BFDBFE' : backgroundColor, // Blue on hover
         color: textColor || 'inherit',
         padding: '2px 4px',
         borderRadius: '3px',
         cursor: 'pointer',
         position: 'relative',
         display: 'inline-block',
+        border: isHovered ? '2px solid #3B82F6' : 'none',
       };
 
       // Add pattern as background image if defined
@@ -192,6 +219,8 @@ const TextEditor: React.FC<TextEditorProps> = ({
         <mark
           key={highlight.id}
           onClick={(e) => handleHighlightClick(e, highlight)}
+          onMouseEnter={() => onHighlightHover?.(highlight.id)}
+          onMouseLeave={() => onHighlightHover?.(null)}
           style={backgroundStyle}
           className="transition hover:opacity-80"
           title={`Click to edit - ${familiarityLevel.replace('-', ' ')}`}

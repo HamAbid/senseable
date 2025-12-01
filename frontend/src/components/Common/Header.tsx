@@ -21,7 +21,7 @@ const Header: React.FC = () => {
 
   const handleLogout = () => {
     logout();
-    navigate('/profile');
+    navigate('/login');
   };
 
   return (
@@ -44,8 +44,21 @@ const Header: React.FC = () => {
                 className="flex items-center space-x-2 p-2 rounded-full hover:bg-gray-100 transition"
                 aria-label="User menu"
               >
-                <div className="w-10 h-10 bg-primary text-white rounded-full flex items-center justify-center font-semibold">
-                  {user.name.charAt(0).toUpperCase()}
+                <div className="w-10 h-10 bg-gray-200 text-gray-700 rounded-full flex items-center justify-center">
+                  <svg
+                    className="w-6 h-6"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                    />
+                  </svg>
                 </div>
               </button>
 
@@ -55,23 +68,10 @@ const Header: React.FC = () => {
                     <p className="text-sm font-semibold text-gray-900">{user.name}</p>
                     <p className="text-xs text-gray-500 mt-1">{user.email}</p>
                   </div>
-                  
-                  <button
-                    onClick={() => {
-                      navigate('/profile');
-                      setShowDropdown(false);
-                    }}
-                    className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition"
-                  >
-                    <div className="flex items-center space-x-2">
-                      <span>👤</span>
-                      <span>Profile Settings</span>
-                    </div>
-                  </button>
-                  
+
                   <button
                     onClick={handleLogout}
-                    className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition border-t border-gray-200 mt-1"
+                    className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition"
                   >
                     <div className="flex items-center space-x-2">
                       <span>🚪</span>

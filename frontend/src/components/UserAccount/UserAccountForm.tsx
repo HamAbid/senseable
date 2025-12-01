@@ -21,45 +21,71 @@ const UserAccountForm: React.FC<UserAccountFormProps> = ({ isLoginMode = false }
     gender: '',
     country: '',
     languagePreference: '',
-    
-    // Accessibility needs (multi-select)
-    accessibilityNeeds: [] as string[],
-    otherAccessibilityText: '',
+
+    // Accessibility needs (two-level selection for login mode)
+    accessibilityCategory: '' as string,
+    accessibilitySubOption: '' as string,
     additionalSupport: '',
-    
+
     // Consent
     consentGiven: false,
-    
+
     // Legacy fields (for profile edit mode)
     email: user?.email || '',
-    accessibilityNeed: preferences?.accessibility_need || 'none' as AccessibilityNeed,
+    accessibilityNeed: 'none' as AccessibilityNeed, // For profile edit mode only
     readingLevel: preferences?.reading_level || 'intermediate' as ReadingLevel,
     preferredComplexity: preferences?.preferred_complexity || 'moderate' as ComplexityLevel,
   });
 
+  // Accessibility options structure
+  const accessibilityOptions = [
+    { id: 'none', label: 'None', options: [] },
+    { id: 'vision', label: 'Vision', options: ['Normal vision', 'Colorblind', 'Low vision'] },
+    { id: 'hearing', label: 'Hearing', options: ['Normal hearing', 'Mild hearing loss', 'Hard of hearing', 'Deaf'] },
+    { id: 'smell', label: 'Smell (Olfactory)', options: ['Normal smell', 'Anosmia', 'Hyposmia'] },
+    { id: 'taste', label: 'Taste (Gustatory)', options: ['Normal taste', 'Ageusia', 'Hypogeusia'] },
+    { id: 'others', label: 'Others', options: ['ADHD', 'Dyslexia', 'Other cognitive'] },
+  ];
+
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
-  // Helper function to toggle accessibility needs
-  const toggleAccessibilityNeed = (need: string) => {
-    setFormData(prev => ({
-      ...prev,
-      accessibilityNeeds: prev.accessibilityNeeds.includes(need)
-        ? prev.accessibilityNeeds.filter(n => n !== need)
-        : [...prev.accessibilityNeeds, need]
-    }));
+  // Helper to convert category/sub-option to AccessibilityNeed type
+  const getAccessibilityNeed = (): AccessibilityNeed => {
+    if (formData.accessibilityCategory === 'none' || !formData.accessibilitySubOption) {
+      return 'none';
+    }
+
+    const subOption = formData.accessibilitySubOption.toLowerCase();
+    if (subOption.includes('colorblind')) return 'colorblind';
+    if (subOption.includes('low vision')) return 'low-vision';
+    if (subOption.includes('dyslexia')) return 'dyslexia';
+    if (subOption.includes('adhd') || subOption.includes('cognitive')) return 'cognitive';
+    return 'other';
+  };
+
+  // Handler to reset sub-option when category changes
+  const handleCategoryChange = (category: string) => {
+    setFormData({
+      ...formData,
+      accessibilityCategory: category,
+      accessibilitySubOption: '', // Reset sub-option
+    });
   };
 
   // Check if all mandatory fields are filled (for login mode)
   const isFormValid = () => {
     if (isLoginMode) {
+      const accessibilityValid = formData.accessibilityCategory !== '' &&
+        (formData.accessibilityCategory === 'none' || formData.accessibilitySubOption !== '');
+
       return (
         formData.name.trim() !== '' &&
         formData.ageRange !== '' &&
         formData.gender !== '' &&
         formData.country !== '' &&
         formData.languagePreference !== '' &&
-        formData.accessibilityNeeds.length > 0 &&
+        accessibilityValid &&
         formData.consentGiven
       );
     }
@@ -77,18 +103,18 @@ const UserAccountForm: React.FC<UserAccountFormProps> = ({ isLoginMode = false }
     if (preferences) {
       setFormData(prev => ({
         ...prev,
-        accessibilityNeed: preferences.accessibility_need,
-        readingLevel: preferences.reading_level,
-        preferredComplexity: preferences.preferred_complexity,
+        accessibilityNeed: preferences.accessibility_need || 'none', // For profile edit mode
+        readingLevel: preferences.reading_level || 'intermediate',
+        preferredComplexity: preferences.preferred_complexity || 'moderate',
         // Load saved profile data from other_preferences
-        ageRange: preferences.other_preferences?.ageRange || '',
-        gender: preferences.other_preferences?.gender || '',
-        country: preferences.other_preferences?.country || '',
-        languagePreference: preferences.other_preferences?.languagePreference || '',
-        accessibilityNeeds: preferences.other_preferences?.accessibilityNeeds || [],
-        otherAccessibilityText: preferences.other_preferences?.otherAccessibilityText || '',
-        additionalSupport: preferences.other_preferences?.additionalSupport || '',
-        consentGiven: preferences.other_preferences?.consentGiven || false,
+        ageRange: (preferences.other_preferences?.ageRange as string) || '',
+        gender: (preferences.other_preferences?.gender as string) || '',
+        country: (preferences.other_preferences?.country as string) || '',
+        languagePreference: (preferences.other_preferences?.languagePreference as string) || '',
+        accessibilityCategory: (preferences.other_preferences?.accessibilityCategory as string) || '',
+        accessibilitySubOption: (preferences.other_preferences?.accessibilitySubOption as string) || '',
+        additionalSupport: (preferences.other_preferences?.additionalSupport as string) || '',
+        consentGiven: preferences.other_preferences?.consentGiven === true,
       }));
     }
   }, [user, preferences]);
@@ -115,42 +141,27 @@ const UserAccountForm: React.FC<UserAccountFormProps> = ({ isLoginMode = false }
           gender: formData.gender,
           country: formData.country,
           languagePreference: formData.languagePreference,
-          accessibilityNeeds: formData.accessibilityNeeds,
-          otherAccessibilityText: formData.otherAccessibilityText,
+          accessibilityCategory: formData.accessibilityCategory,
+          accessibilitySubOption: formData.accessibilitySubOption,
           additionalSupport: formData.additionalSupport,
         } : {
           name: formData.name,
           email: formData.email,
         };
-        
+
         const newUser = await userService.register(registrationData);
-        
+
         console.log('Step 2: Register API returned:', newUser);
-        
+
         if (!newUser || !newUser.id) {
           throw new Error('User object missing id field');
         }
-        
+
         console.log('Step 3: Calling setUser with:', newUser);
         setUser(newUser);
 
-        // Determine primary accessibility need from selections
-        let primaryAccessibilityNeed: AccessibilityNeed = 'none';
-        if (isLoginMode && formData.accessibilityNeeds.length > 0) {
-          const needsMap: Record<string, AccessibilityNeed> = {
-            'colorblind': 'colorblind',
-            'low-vision': 'low-vision',
-            'dyslexia': 'dyslexia',
-            'adhd': 'cognitive',
-            'deaf': 'other',
-            'hard-of-hearing': 'other',
-            'anosmia': 'other',
-            'hyposmia': 'other',
-          };
-          primaryAccessibilityNeed = needsMap[formData.accessibilityNeeds[0]] || 'other';
-        } else {
-          primaryAccessibilityNeed = formData.accessibilityNeed;
-        }
+        // Use the accessibility need from the category/sub-option
+        const primaryAccessibilityNeed: AccessibilityNeed = getAccessibilityNeed();
 
         // Create preferences
         const colorPalette = getColorPalette(primaryAccessibilityNeed);
@@ -166,8 +177,8 @@ const UserAccountForm: React.FC<UserAccountFormProps> = ({ isLoginMode = false }
             gender: formData.gender,
             country: formData.country,
             languagePreference: formData.languagePreference,
-            accessibilityNeeds: formData.accessibilityNeeds,
-            otherAccessibilityText: formData.otherAccessibilityText,
+            accessibilityCategory: formData.accessibilityCategory,
+            accessibilitySubOption: formData.accessibilitySubOption,
             additionalSupport: formData.additionalSupport,
             consentGiven: formData.consentGiven,
           } : undefined,
@@ -192,10 +203,11 @@ const UserAccountForm: React.FC<UserAccountFormProps> = ({ isLoginMode = false }
           email: formData.email,
         });
 
-        const colorPalette = getColorPalette(formData.accessibilityNeed);
+        const primaryAccessibilityNeed = getAccessibilityNeed();
+        const colorPalette = getColorPalette(primaryAccessibilityNeed);
         console.log('Step 3: Updating preferences for user ID:', user.id);
         const updatedPreferences = await userService.updatePreferences(user.id, {
-          accessibility_need: formData.accessibilityNeed,
+          accessibility_need: primaryAccessibilityNeed,
           reading_level: formData.readingLevel,
           preferred_complexity: formData.preferredComplexity,
           color_palette: colorPalette,
@@ -204,8 +216,8 @@ const UserAccountForm: React.FC<UserAccountFormProps> = ({ isLoginMode = false }
             gender: formData.gender,
             country: formData.country,
             languagePreference: formData.languagePreference,
-            accessibilityNeeds: formData.accessibilityNeeds,
-            otherAccessibilityText: formData.otherAccessibilityText,
+            accessibilityCategory: formData.accessibilityCategory,
+            accessibilitySubOption: formData.accessibilitySubOption,
             additionalSupport: formData.additionalSupport,
             consentGiven: formData.consentGiven,
           },
@@ -352,161 +364,63 @@ const UserAccountForm: React.FC<UserAccountFormProps> = ({ isLoginMode = false }
                   </div>
                 </div>
 
-                {/* Accessibility Needs */}
-                <div className="space-y-4">
-                  <h3 className="text-xl font-semibold text-gray-800">
-                    Do you have any accessibility needs? <span className="text-red-500">*</span>
-                  </h3>
-                  
-                  <div className="space-y-3">
-                    {/* None */}
-                    <label className="flex items-start gap-3 p-3 border rounded-lg hover:bg-gray-50 cursor-pointer">
-                      <input
-                        type="checkbox"
-                        checked={formData.accessibilityNeeds.includes('none')}
-                        onChange={() => toggleAccessibilityNeed('none')}
-                        className="mt-1 h-4 w-4 text-primary focus:ring-primary border-gray-300 rounded"
-                      />
-                      <span className="text-sm font-medium text-gray-700">None</span>
+                {/* Accessibility Needs - Two-level selection */}
+                <div className="space-y-3">
+                  <div>
+                    <label htmlFor="accessibilityCategory" className="block text-sm font-medium text-gray-700 mb-1">
+                      Do you have any accessibility needs? <span className="text-red-500">*</span>
                     </label>
+                    <select
+                      id="accessibilityCategory"
+                      value={formData.accessibilityCategory}
+                      onChange={(e) => handleCategoryChange(e.target.value)}
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
+                      required
+                    >
+                      <option value="">Select category</option>
+                      {accessibilityOptions.map(option => (
+                        <option key={option.id} value={option.id}>{option.label}</option>
+                      ))}
+                    </select>
+                  </div>
 
-                    {/* Vision */}
-                    <div className="border rounded-lg p-3">
-                      <div className="font-medium text-gray-700 mb-2">Vision</div>
-                      <div className="ml-4 space-y-2">
-                        <label className="flex items-start gap-3 cursor-pointer">
-                          <input
-                            type="checkbox"
-                            checked={formData.accessibilityNeeds.includes('colorblind')}
-                            onChange={() => toggleAccessibilityNeed('colorblind')}
-                            className="mt-1 h-4 w-4 text-primary focus:ring-primary border-gray-300 rounded"
-                          />
-                          <span className="text-sm text-gray-700">Colorblind</span>
-                        </label>
-                        <label className="flex items-start gap-3 cursor-pointer">
-                          <input
-                            type="checkbox"
-                            checked={formData.accessibilityNeeds.includes('low-vision')}
-                            onChange={() => toggleAccessibilityNeed('low-vision')}
-                            className="mt-1 h-4 w-4 text-primary focus:ring-primary border-gray-300 rounded"
-                          />
-                          <span className="text-sm text-gray-700">Low vision</span>
-                        </label>
-                      </div>
-                    </div>
-
-                    {/* Hearing */}
-                    <div className="border rounded-lg p-3">
-                      <div className="font-medium text-gray-700 mb-2">Hearing</div>
-                      <div className="ml-4 space-y-2">
-                        <label className="flex items-start gap-3 cursor-pointer">
-                          <input
-                            type="checkbox"
-                            checked={formData.accessibilityNeeds.includes('deaf')}
-                            onChange={() => toggleAccessibilityNeed('deaf')}
-                            className="mt-1 h-4 w-4 text-primary focus:ring-primary border-gray-300 rounded"
-                          />
-                          <span className="text-sm text-gray-700">Deaf</span>
-                        </label>
-                        <label className="flex items-start gap-3 cursor-pointer">
-                          <input
-                            type="checkbox"
-                            checked={formData.accessibilityNeeds.includes('hard-of-hearing')}
-                            onChange={() => toggleAccessibilityNeed('hard-of-hearing')}
-                            className="mt-1 h-4 w-4 text-primary focus:ring-primary border-gray-300 rounded"
-                          />
-                          <span className="text-sm text-gray-700">Hard of hearing</span>
-                        </label>
-                      </div>
-                    </div>
-
-                    {/* Smell */}
-                    <div className="border rounded-lg p-3">
-                      <div className="font-medium text-gray-700 mb-2">Smell</div>
-                      <div className="ml-4 space-y-2">
-                        <label className="flex items-start gap-3 cursor-pointer">
-                          <input
-                            type="checkbox"
-                            checked={formData.accessibilityNeeds.includes('anosmia')}
-                            onChange={() => toggleAccessibilityNeed('anosmia')}
-                            className="mt-1 h-4 w-4 text-primary focus:ring-primary border-gray-300 rounded"
-                          />
-                          <span className="text-sm text-gray-700">Anosmia</span>
-                        </label>
-                        <label className="flex items-start gap-3 cursor-pointer">
-                          <input
-                            type="checkbox"
-                            checked={formData.accessibilityNeeds.includes('hyposmia')}
-                            onChange={() => toggleAccessibilityNeed('hyposmia')}
-                            className="mt-1 h-4 w-4 text-primary focus:ring-primary border-gray-300 rounded"
-                          />
-                          <span className="text-sm text-gray-700">Hyposmia</span>
-                        </label>
-                      </div>
-                    </div>
-
-                    {/* Cognitive */}
-                    <div className="border rounded-lg p-3">
-                      <div className="font-medium text-gray-700 mb-2">Cognitive</div>
-                      <div className="ml-4 space-y-2">
-                        <label className="flex items-start gap-3 cursor-pointer">
-                          <input
-                            type="checkbox"
-                            checked={formData.accessibilityNeeds.includes('dyslexia')}
-                            onChange={() => toggleAccessibilityNeed('dyslexia')}
-                            className="mt-1 h-4 w-4 text-primary focus:ring-primary border-gray-300 rounded"
-                          />
-                          <span className="text-sm text-gray-700">Dyslexia</span>
-                        </label>
-                        <label className="flex items-start gap-3 cursor-pointer">
-                          <input
-                            type="checkbox"
-                            checked={formData.accessibilityNeeds.includes('adhd')}
-                            onChange={() => toggleAccessibilityNeed('adhd')}
-                            className="mt-1 h-4 w-4 text-primary focus:ring-primary border-gray-300 rounded"
-                          />
-                          <span className="text-sm text-gray-700">ADHD</span>
-                        </label>
-                      </div>
-                    </div>
-
-                    {/* Others */}
-                    <div className="border rounded-lg p-3">
-                      <label className="flex items-start gap-3 cursor-pointer">
-                        <input
-                          type="checkbox"
-                          checked={formData.accessibilityNeeds.includes('others')}
-                          onChange={() => toggleAccessibilityNeed('others')}
-                          className="mt-1 h-4 w-4 text-primary focus:ring-primary border-gray-300 rounded"
-                        />
-                        <span className="text-sm font-medium text-gray-700">Others</span>
+                  {/* Sub-option dropdown - only show if category is selected and not 'none' */}
+                  {formData.accessibilityCategory && formData.accessibilityCategory !== 'none' && (
+                    <div>
+                      <label htmlFor="accessibilitySubOption" className="block text-sm font-medium text-gray-700 mb-1">
+                        Please specify <span className="text-red-500">*</span>
                       </label>
-                      {formData.accessibilityNeeds.includes('others') && (
-                        <input
-                          type="text"
-                          value={formData.otherAccessibilityText}
-                          onChange={(e) => setFormData({ ...formData, otherAccessibilityText: e.target.value })}
-                          placeholder="Please specify..."
-                          className="mt-2 w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
-                        />
-                      )}
+                      <select
+                        id="accessibilitySubOption"
+                        value={formData.accessibilitySubOption}
+                        onChange={(e) => setFormData({ ...formData, accessibilitySubOption: e.target.value })}
+                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
+                        required
+                      >
+                        <option value="">Select option</option>
+                        {accessibilityOptions
+                          .find(opt => opt.id === formData.accessibilityCategory)
+                          ?.options.map(subOption => (
+                            <option key={subOption} value={subOption}>{subOption}</option>
+                          ))}
+                      </select>
                     </div>
-                  </div>
+                  )}
+                </div>
 
-                  {/* Additional support */}
-                  <div className="mt-4">
-                    <label htmlFor="additionalSupport" className="block text-sm font-medium text-gray-700 mb-1">
-                      Anything else we should know to support you? <span className="text-gray-500">(Optional)</span>
-                    </label>
-                    <textarea
-                      id="additionalSupport"
-                      value={formData.additionalSupport}
-                      onChange={(e) => setFormData({ ...formData, additionalSupport: e.target.value })}
-                      placeholder="Share any additional information that would help us better support your needs..."
-                      rows={4}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent resize-none"
-                    />
-                  </div>
+                {/* Additional support */}
+                <div>
+                  <label htmlFor="additionalSupport" className="block text-sm font-medium text-gray-700 mb-1">
+                    Anything else we should know to support you? <span className="text-gray-500">(Optional)</span>
+                  </label>
+                  <textarea
+                    id="additionalSupport"
+                    value={formData.additionalSupport}
+                    onChange={(e) => setFormData({ ...formData, additionalSupport: e.target.value })}
+                    placeholder="Share any additional information that would help us better support your needs..."
+                    rows={4}
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent resize-none"
+                  />
                 </div>
 
                 {/* Consent */}
@@ -643,161 +557,6 @@ const UserAccountForm: React.FC<UserAccountFormProps> = ({ isLoginMode = false }
                       <option value="hindi">Hindi</option>
                       <option value="bengali">Bengali</option>
                     </select>
-                  </div>
-                </div>
-
-                {/* Accessibility Needs - Multi-select */}
-                <div className="space-y-4">
-                  <h3 className="text-xl font-semibold text-gray-800">Accessibility Needs</h3>
-                  
-                  <div className="space-y-3">
-                    {/* None */}
-                    <label className="flex items-start gap-3 p-3 border rounded-lg hover:bg-gray-50 cursor-pointer">
-                      <input
-                        type="checkbox"
-                        checked={formData.accessibilityNeeds.includes('none')}
-                        onChange={() => toggleAccessibilityNeed('none')}
-                        className="mt-1 h-4 w-4 text-primary focus:ring-primary border-gray-300 rounded"
-                      />
-                      <span className="text-sm font-medium text-gray-700">None</span>
-                    </label>
-
-                    {/* Vision */}
-                    <div className="border rounded-lg p-3">
-                      <div className="font-medium text-gray-700 mb-2">Vision</div>
-                      <div className="ml-4 space-y-2">
-                        <label className="flex items-start gap-3 cursor-pointer">
-                          <input
-                            type="checkbox"
-                            checked={formData.accessibilityNeeds.includes('colorblind')}
-                            onChange={() => toggleAccessibilityNeed('colorblind')}
-                            className="mt-1 h-4 w-4 text-primary focus:ring-primary border-gray-300 rounded"
-                          />
-                          <span className="text-sm text-gray-700">Colorblind</span>
-                        </label>
-                        <label className="flex items-start gap-3 cursor-pointer">
-                          <input
-                            type="checkbox"
-                            checked={formData.accessibilityNeeds.includes('low-vision')}
-                            onChange={() => toggleAccessibilityNeed('low-vision')}
-                            className="mt-1 h-4 w-4 text-primary focus:ring-primary border-gray-300 rounded"
-                          />
-                          <span className="text-sm text-gray-700">Low vision</span>
-                        </label>
-                      </div>
-                    </div>
-
-                    {/* Hearing */}
-                    <div className="border rounded-lg p-3">
-                      <div className="font-medium text-gray-700 mb-2">Hearing</div>
-                      <div className="ml-4 space-y-2">
-                        <label className="flex items-start gap-3 cursor-pointer">
-                          <input
-                            type="checkbox"
-                            checked={formData.accessibilityNeeds.includes('deaf')}
-                            onChange={() => toggleAccessibilityNeed('deaf')}
-                            className="mt-1 h-4 w-4 text-primary focus:ring-primary border-gray-300 rounded"
-                          />
-                          <span className="text-sm text-gray-700">Deaf</span>
-                        </label>
-                        <label className="flex items-start gap-3 cursor-pointer">
-                          <input
-                            type="checkbox"
-                            checked={formData.accessibilityNeeds.includes('hard-of-hearing')}
-                            onChange={() => toggleAccessibilityNeed('hard-of-hearing')}
-                            className="mt-1 h-4 w-4 text-primary focus:ring-primary border-gray-300 rounded"
-                          />
-                          <span className="text-sm text-gray-700">Hard of hearing</span>
-                        </label>
-                      </div>
-                    </div>
-
-                    {/* Smell */}
-                    <div className="border rounded-lg p-3">
-                      <div className="font-medium text-gray-700 mb-2">Smell</div>
-                      <div className="ml-4 space-y-2">
-                        <label className="flex items-start gap-3 cursor-pointer">
-                          <input
-                            type="checkbox"
-                            checked={formData.accessibilityNeeds.includes('anosmia')}
-                            onChange={() => toggleAccessibilityNeed('anosmia')}
-                            className="mt-1 h-4 w-4 text-primary focus:ring-primary border-gray-300 rounded"
-                          />
-                          <span className="text-sm text-gray-700">Anosmia</span>
-                        </label>
-                        <label className="flex items-start gap-3 cursor-pointer">
-                          <input
-                            type="checkbox"
-                            checked={formData.accessibilityNeeds.includes('hyposmia')}
-                            onChange={() => toggleAccessibilityNeed('hyposmia')}
-                            className="mt-1 h-4 w-4 text-primary focus:ring-primary border-gray-300 rounded"
-                          />
-                          <span className="text-sm text-gray-700">Hyposmia</span>
-                        </label>
-                      </div>
-                    </div>
-
-                    {/* Cognitive */}
-                    <div className="border rounded-lg p-3">
-                      <div className="font-medium text-gray-700 mb-2">Cognitive</div>
-                      <div className="ml-4 space-y-2">
-                        <label className="flex items-start gap-3 cursor-pointer">
-                          <input
-                            type="checkbox"
-                            checked={formData.accessibilityNeeds.includes('dyslexia')}
-                            onChange={() => toggleAccessibilityNeed('dyslexia')}
-                            className="mt-1 h-4 w-4 text-primary focus:ring-primary border-gray-300 rounded"
-                          />
-                          <span className="text-sm text-gray-700">Dyslexia</span>
-                        </label>
-                        <label className="flex items-start gap-3 cursor-pointer">
-                          <input
-                            type="checkbox"
-                            checked={formData.accessibilityNeeds.includes('adhd')}
-                            onChange={() => toggleAccessibilityNeed('adhd')}
-                            className="mt-1 h-4 w-4 text-primary focus:ring-primary border-gray-300 rounded"
-                          />
-                          <span className="text-sm text-gray-700">ADHD</span>
-                        </label>
-                      </div>
-                    </div>
-
-                    {/* Others */}
-                    <div className="border rounded-lg p-3">
-                      <label className="flex items-start gap-3 cursor-pointer">
-                        <input
-                          type="checkbox"
-                          checked={formData.accessibilityNeeds.includes('others')}
-                          onChange={() => toggleAccessibilityNeed('others')}
-                          className="mt-1 h-4 w-4 text-primary focus:ring-primary border-gray-300 rounded"
-                        />
-                        <span className="text-sm font-medium text-gray-700">Others</span>
-                      </label>
-                      {formData.accessibilityNeeds.includes('others') && (
-                        <input
-                          type="text"
-                          value={formData.otherAccessibilityText}
-                          onChange={(e) => setFormData({ ...formData, otherAccessibilityText: e.target.value })}
-                          placeholder="Please specify..."
-                          className="mt-2 w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
-                        />
-                      )}
-                    </div>
-                  </div>
-
-                  {/* Additional support */}
-                  <div className="mt-4">
-                    <label htmlFor="additionalSupport" className="block text-sm font-medium text-gray-700 mb-1">
-                      Anything else we should know to support you? <span className="text-gray-500">(Optional)</span>
-                    </label>
-                    <textarea
-                      id="additionalSupport"
-                      value={formData.additionalSupport}
-                      onChange={(e) => setFormData({ ...formData, additionalSupport: e.target.value })}
-                      placeholder="Share any additional information that would help us better support your needs..."
-                      rows={4}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent resize-none"
-                    />
                   </div>
                 </div>
 

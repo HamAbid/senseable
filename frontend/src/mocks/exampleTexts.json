@@ -9,6 +9,7 @@
           "tag": "not_familiar",
           "start_index": 49,
           "end_index": 62,
+          "explanation": "This phrase may be too complex for most readers. Using simpler language makes the text more accessible.",
           "rephrased_versions": [
             { "replacement": "careful mix", "length": 11 },
             { "replacement": "fine combination", "length": 16 }
@@ -19,6 +20,7 @@
           "tag": "somewhat_familiar",
           "start_index": 66,
           "end_index": 78,
+          "explanation": "A somewhat technical term that can be made clearer for better understanding.",
           "rephrased_versions": [
             { "replacement": "usefulness in everyday life", "length": 27 },
             { "replacement": "how easy it is to use", "length": 21 }
@@ -29,6 +31,7 @@
           "tag": "not_familiar",
           "start_index": 83,
           "end_index": 103,
+          "explanation": "This formal phrase is difficult for many readers. A simpler alternative improves clarity.",
           "rephrased_versions": [
             { "replacement": "very neat and stylish look", "length": 26 },
             { "replacement": "polished, good-looking style", "length": 27 }
@@ -39,6 +42,7 @@
           "tag": "somewhat_familiar",
           "start_index": 142,
           "end_index": 157,
+          "explanation": "While commonly used, explaining this concept more simply helps all readers.",
           "rephrased_versions": [
             { "replacement": "how the inside of a room is arranged and decorated", "length": 53 },
             { "replacement": "the way a room looks and is set up", "length": 32 }
@@ -49,6 +53,7 @@
           "tag": "familiar",
           "start_index": 189,
           "end_index": 199,
+          "explanation": "Generally understood, but a clearer description can help some readers.",
           "rephrased_versions": [
             { "replacement": "lets air pass through", "length": 20 },
             { "replacement": "allows air to move easily", "length": 25 }
@@ -59,6 +64,7 @@
           "tag": "not_familiar",
           "start_index": 201,
           "end_index": 231,
+          "explanation": "This complex technical term needs simplification for most readers.",
           "rephrased_versions": [
             { "replacement": "layer that helps keep the room not too hot or cold", "length": 56 },
             { "replacement": "fabric that helps even out the room temperature", "length": 50 }
@@ -69,6 +75,7 @@
           "tag": "somewhat_familiar",
           "start_index": 277,
           "end_index": 285,
+          "explanation": "A French-origin word that may not be clear to all readers.",
           "rephrased_versions": [
             { "replacement": "overall feeling in the room", "length": 28 },
             { "replacement": "mood or atmosphere of the space", "length": 33 }
@@ -79,6 +86,7 @@
           "tag": "somewhat_familiar",
           "start_index": 337,
           "end_index": 352,
+          "explanation": "This descriptor can be explained more concretely for better comprehension.",
           "rephrased_versions": [
             { "replacement": "natural feel of the fabric", "length": 27 },
             { "replacement": "surface that feels natural and real", "length": 36 }
@@ -89,6 +97,7 @@
           "tag": "not_familiar",
           "start_index": 362,
           "end_index": 382,
+          "explanation": "An abstract phrase that's hard for most readers to visualize.",
           "rephrased_versions": [
             { "replacement": "simple but classy look", "length": 22 },
             { "replacement": "quiet, gentle kind of beauty", "length": 30 }
@@ -99,6 +108,7 @@
           "tag": "familiar",
           "start_index": 485,
           "end_index": 510,
+          "explanation": "While familiar, a simpler version makes the meaning more concrete.",
           "rephrased_versions": [
             { "replacement": "easy to wash and long-lasting", "length": 28 },
             { "replacement": "can be cleaned often and still stay strong", "length": 44 }
@@ -109,6 +119,7 @@
           "tag": "somewhat_familiar",
           "start_index": 590,
           "end_index": 611,
+          "explanation": "The word 'propensity' is formal and can be simplified.",
           "rephrased_versions": [
             { "replacement": "tends to get creased easily", "length": 27 },
             { "replacement": "likely to show wrinkles quickly", "length": 31 }
@@ -119,6 +130,7 @@
           "tag": "somewhat_familiar",
           "start_index": 620,
           "end_index": 651,
+          "explanation": "A complex phrase that describes a simple concept.",
           "rephrased_versions": [
             { "replacement": "can slowly lose its color over time", "length": 36 },
             { "replacement": "may gently fade if it gets a lot of sun", "length": 40 }
@@ -129,6 +141,7 @@
           "tag": "somewhat_familiar",
           "start_index": 785,
           "end_index": 819,
+          "explanation": "Technical terminology that benefits from plain language explanation.",
           "rephrased_versions": [
             { "replacement": "other curtains made from man-made or blackout fabrics", "length": 57 },
             { "replacement": "different options like man-made or fully darkening curtains", "length": 63 }
@@ -139,6 +152,7 @@
           "tag": "not_familiar",
           "start_index": 917,
           "end_index": 931,
+          "explanation": "A sophisticated descriptor that needs simplification.",
           "rephrased_versions": [
             { "replacement": "pleasant, cozy feel to the touch", "length": 33 },
             { "replacement": "feels warm and comforting when you touch it", "length": 47 }
@@ -149,6 +163,7 @@
           "tag": "somewhat_familiar",
           "start_index": 954,
           "end_index": 971,
+          "explanation": "Environmental terminology that can be stated more simply.",
           "rephrased_versions": [
             { "replacement": "good for the environment", "length": 24 },
             { "replacement": "environment-friendly advantage", "length": 31 }
@@ -159,6 +174,7 @@
           "tag": "not_familiar",
           "start_index": 1077,
           "end_index": 1114,
+          "explanation": "An overly poetic phrase that obscures meaning for many readers.",
           "rephrased_versions": [
             { "replacement": "gentle way light and fabric surface work together", "length": 52 },
             { "replacement": "soft mix of how light falls on the fabric and how it feels", "length": 59 }
@@ -175,6 +191,7 @@
           "tag": "not_familiar",
           "start_index": 69,
           "end_index": 89,
+          "explanation": "Technical AI jargon that most readers won't understand.",
           "rephrased_versions": [
             { "replacement": "advanced AI system", "length": 18 },
             { "replacement": "smart text program", "length": 18 }
@@ -185,6 +202,7 @@
           "tag": "not_familiar",
           "start_index": 91,
           "end_index": 101,
+          "explanation": "Industry-specific acronym that needs clarification.",
           "rephrased_versions": [
             { "replacement": "AI helpers", "length": 10 },
             { "replacement": "smart assistants", "length": 16 }
@@ -195,6 +213,7 @@
           "tag": "familiar",
           "start_index": 151,
           "end_index": 166,
+          "explanation": "Technical term that can be made more accessible.",
           "rephrased_versions": [
             { "replacement": "solutions", "length": 9 },
             { "replacement": "versions", "length": 8 }
@@ -205,6 +224,7 @@
           "tag": "somewhat_familiar",
           "start_index": 182,
           "end_index": 200,
+          "explanation": "Programming terminology that benefits from simplification.",
           "rephrased_versions": [
             { "replacement": "complicated tools", "length": 17 },
             { "replacement": "heavy systems", "length": 13 }
@@ -215,6 +235,7 @@
           "tag": "somewhat_familiar",
           "start_index": 204,
           "end_index": 225,
+          "explanation": "Developer jargon that can be stated more plainly.",
           "rephrased_versions": [
             { "replacement": "specific tools", "length": 14 },
             { "replacement": "custom packages", "length": 15 }
@@ -225,6 +246,7 @@
           "tag": "somewhat_familiar",
           "start_index": 264,
           "end_index": 283,
+          "explanation": "Abstract programming concept that needs clearer explanation.",
           "rephrased_versions": [
             { "replacement": "reusable designs", "length": 16 },
             { "replacement": "building blocks", "length": 15 }
@@ -235,6 +257,7 @@
           "tag": "familiar",
           "start_index": 399,
           "end_index": 415,
+          "explanation": "Common phrase that can still be made simpler.",
           "rephrased_versions": [
             { "replacement": "useful tips", "length": 11 },
             { "replacement": "helpful guidance", "length": 16 }
