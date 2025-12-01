@@ -4,11 +4,16 @@ from ..models.user import User
 from ..models.preference import UserPreference
 from ..schemas.user import UserCreate, UserUpdate
 from ..schemas.preference import UserPreferenceCreate, UserPreferenceUpdate
+import datetime
 
 class UserService:
     @staticmethod
     def create_user(db: Session, user_data: UserCreate) -> User:
-        db_user = User(**user_data.model_dump())
+        # Generate email if not provided
+        timestamp = int(datetime.datetime.now().timestamp() * 1000)
+        email = user_data.email or f"user_{timestamp}@senseable.app"
+        
+        db_user = User(email=email, name=user_data.name)
         db.add(db_user)
         db.commit()
         db.refresh(db_user)

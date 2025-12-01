@@ -11,15 +11,31 @@ router = APIRouter(prefix="/api/users", tags=["users"])
 
 @router.post("/register", response_model=UserResponse)
 def register_user(user_data: UserCreate, db: Session = Depends(get_db)):
-    """Register a new user - simple version for demo"""
-    # Check if user already exists
-    existing_user = user_service.get_user_by_email(db, user_data.email)
-    if existing_user:
-        # For demo, just return existing user
-        return UserResponse.model_validate(existing_user)
-    
+    """Register a new user - creates user and stores profile data in preferences"""
     # Create user
     user = user_service.create_user(db, user_data)
+    
+    # If demographic data is provided, create initial preferences
+    if user_data.ageRange or user_data.gender or user_data.country:
+        from ..schemas.preference import UserPreferenceUpdate
+        other_prefs = {
+            'ageRange': user_data.ageRange,
+            'gender': user_data.gender,
+            'country': user_data.country,
+            'languagePreference': user_data.languagePreference,
+            'accessibilityNeeds': user_data.accessibilityNeeds or [],
+            'otherAccessibilityText': user_data.otherAccessibilityText,
+            'additionalSupport': user_data.additionalSupport,
+        }
+        
+        pref_data = UserPreferenceUpdate(
+            accessibility_need='none',
+            reading_level='intermediate',
+            preferred_complexity='moderate',
+            other_preferences=other_prefs
+        )
+        user_service.update_preferences(db, user.id, pref_data)
+    
     return UserResponse.model_validate(user)
 
 @router.get("/profile/{user_id}", response_model=UserResponse)

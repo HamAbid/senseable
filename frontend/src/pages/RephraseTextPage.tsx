@@ -27,6 +27,15 @@ const RephraseTextPage: React.FC = () => {
     }
   }, [user, navigate]);
 
+  // Re-render highlights when color palette changes (e.g., accessibility settings updated)
+  useEffect(() => {
+    // Force re-render of TextEditor component when colorPalette changes
+    if (isAnalyzed && highlights.length > 0) {
+      // Trigger a re-render by creating new array reference
+      setHighlights([...highlights]);
+    }
+  }, [colorPalette]);
+
   // Count tags by familiarity level
   const tagCounts = highlights.reduce((acc, h) => {
     if (h.familiarityLevel) {

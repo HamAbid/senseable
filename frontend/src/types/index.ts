@@ -42,6 +42,16 @@ export interface ColorPalette {
   'not-familiar': string;
   'somewhat-familiar': string;
   'familiar': string;
+  textColors?: {
+    'not-familiar': string;
+    'somewhat-familiar': string;
+    'familiar': string;
+  };
+  patterns?: {
+    'not-familiar': string;
+    'somewhat-familiar': string;
+    'familiar': string;
+  };
 }
 
 export interface Tag {

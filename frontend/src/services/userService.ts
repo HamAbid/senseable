@@ -2,8 +2,8 @@ import api from './api';
 import { User, UserPreferences } from '../types';
 
 export const userService = {
-  async register(email: string, name: string): Promise<User> {
-    const response = await api.post('/api/users/register', { email, name });
+  async register(data: any): Promise<User> {
+    const response = await api.post('/api/users/register', data);
     return response.data;
   },
 

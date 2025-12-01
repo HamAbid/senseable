@@ -5,7 +5,7 @@ class UserPreferenceBase(BaseModel):
     accessibility_need: Optional[str] = None
     reading_level: Optional[str] = None
     preferred_complexity: Optional[str] = None
-    color_palette: Optional[Dict[str, str]] = None
+    color_palette: Optional[Dict[str, Any]] = None
     other_preferences: Optional[Dict[str, Any]] = None
 
 class UserPreferenceCreate(UserPreferenceBase):
@@ -20,7 +20,7 @@ class UserPreferenceResponse(BaseModel):
     accessibility_need: Optional[str] = None
     reading_level: Optional[str] = None
     preferred_complexity: Optional[str] = None
-    color_palette: Optional[Dict[str, str]] = None
+    color_palette: Optional[Dict[str, Any]] = None
     other_preferences: Optional[Dict[str, Any]] = None
     
     class Config:

@@ -6,8 +6,18 @@ class UserBase(BaseModel):
     email: EmailStr
     name: str
 
-class UserCreate(UserBase):
-    pass
+class UserCreate(BaseModel):
+    """Schema for user registration - accepts name and optional profile data"""
+    name: str
+    email: Optional[EmailStr] = None
+    # Optional demographic fields
+    ageRange: Optional[str] = None
+    gender: Optional[str] = None
+    country: Optional[str] = None
+    languagePreference: Optional[str] = None
+    accessibilityNeeds: Optional[list] = None
+    otherAccessibilityText: Optional[str] = None
+    additionalSupport: Optional[str] = None
 
 class UserUpdate(BaseModel):
     name: Optional[str] = None
