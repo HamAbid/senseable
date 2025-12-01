@@ -1,16 +1,16 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useUser } from '../context/UserContext';
-import Header from '../components/Common/Header';
 import Button from '../components/Common/Button';
-import TextEditor from '../components/RephraseText/TextEditor';
-import SuggestionsPanel, { SuggestionsPanelRef } from '../components/RephraseText/SuggestionsPanel';
-import ProfileEdit from '../components/RephraseText/ProfileEdit';
+import Header from '../components/Common/Header';
 import Chat from '../components/RephraseText/Chat';
+import ProfileEdit from '../components/RephraseText/ProfileEdit';
 import RewritePane from '../components/RephraseText/RewritePane';
-import { TextHighlight, Suggestion, FamiliarityLevel } from '../types';
+import SuggestionsPanel, { SuggestionsPanelRef } from '../components/RephraseText/SuggestionsPanel';
+import TextEditor from '../components/RephraseText/TextEditor';
+import { useUser } from '../context/UserContext';
+import { mockAnalyzeText, mockCustomRephrase, mockGetFullRewrite, mockGetGentleRewrite, mockGetSuggestions } from '../mocks/analyzeData';
+import { FamiliarityLevel, Suggestion, TextHighlight } from '../types';
 import { defaultColorPalette } from '../utils/colorPalettes';
-import { mockAnalyzeText, mockGetSuggestions, mockGetGentleRewrite, mockGetFullRewrite, mockCustomRephrase } from '../mocks/analyzeData';
 
 const RephraseTextPage: React.FC = () => {
   const { user, preferences } = useUser();
@@ -98,7 +98,7 @@ const RephraseTextPage: React.FC = () => {
   };
 
   const handleUpdateHighlight = (id: string, level: FamiliarityLevel) => {
-    setHighlights(highlights.map(h => 
+    setHighlights(highlights.map(h =>
       h.id === id ? { ...h, familiarityLevel: level } : h
     ));
   };
@@ -204,7 +204,7 @@ const RephraseTextPage: React.FC = () => {
   return (
     <div className="min-h-screen bg-gray-50">
       <Header />
-      
+
       <div className="container mx-auto px-4 py-8">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Main Content Area */}
@@ -260,8 +260,8 @@ const RephraseTextPage: React.FC = () => {
               </div>
 
               {isAnalyzed && (
-                <div className="mt-3 p-2 bg-gray-50 rounded-lg">
-                  <p className="text-xs text-gray-600">
+                <div className="mt-3 p-2 bg-blue-50 rounded-lg">
+                  <p className="text-xs text-blue-600">
                     💡 <strong>Tip:</strong> Check the Tags panel to see alternatives for each tagged phrase, or click Rewrite to see full rewritten versions.
                   </p>
                 </div>
@@ -287,36 +287,33 @@ const RephraseTextPage: React.FC = () => {
                 <button
                   onClick={() => isAnalyzed && setActiveTab('tags')}
                   disabled={!isAnalyzed}
-                  className={`flex-1 px-3 py-2 text-xs font-medium transition ${
-                    activeTab === 'tags'
-                      ? 'text-primary border-b-2 border-primary'
-                      : !isAnalyzed
+                  className={`flex-1 px-3 py-2 text-xs font-medium transition ${activeTab === 'tags'
+                    ? 'text-primary border-b-2 border-primary'
+                    : !isAnalyzed
                       ? 'text-gray-400 cursor-not-allowed'
                       : 'text-gray-600 hover:text-gray-800'
-                  }`}
+                    }`}
                 >
                   Tags
                 </button>
                 <button
                   onClick={() => originalText.trim() && setActiveTab('chat')}
                   disabled={!originalText.trim()}
-                  className={`flex-1 px-3 py-2 text-xs font-medium transition ${
-                    activeTab === 'chat'
-                      ? 'text-primary border-b-2 border-primary'
-                      : !originalText.trim()
+                  className={`flex-1 px-3 py-2 text-xs font-medium transition ${activeTab === 'chat'
+                    ? 'text-primary border-b-2 border-primary'
+                    : !originalText.trim()
                       ? 'text-gray-400 cursor-not-allowed'
                       : 'text-gray-600 hover:text-gray-800'
-                  }`}
+                    }`}
                 >
                   Chat
                 </button>
                 <button
                   onClick={() => setActiveTab('profile')}
-                  className={`flex-1 px-3 py-2 text-xs font-medium transition ${
-                    activeTab === 'profile'
-                      ? 'text-primary border-b-2 border-primary'
-                      : 'text-gray-600 hover:text-gray-800'
-                  }`}
+                  className={`flex-1 px-3 py-2 text-xs font-medium transition ${activeTab === 'profile'
+                    ? 'text-primary border-b-2 border-primary'
+                    : 'text-gray-600 hover:text-gray-800'
+                    }`}
                 >
                   Update Profile
                 </button>
@@ -329,57 +326,57 @@ const RephraseTextPage: React.FC = () => {
                 <div className="space-y-4">
                   {/* Tag Summary - Compact version at top */}
                   {isAnalyzed && (
-              <div className="bg-white rounded-lg shadow p-2 lg:sticky lg:top-0 lg:z-10">
-                <h3 className="text-xs font-semibold text-gray-800 mb-1.5">Tag Summary</h3>
-                <div className="space-y-1">
-                  <div className="flex items-center justify-between p-1.5 rounded"
-                       style={{ backgroundColor: `${colorPalette['not-familiar']}10` }}>
-                    <div className="flex items-center gap-1.5">
-                      <div className="w-2 h-2 rounded"
-                           style={{ backgroundColor: colorPalette['not-familiar'] }}></div>
-                      <span className="text-xs font-medium">Not Familiar</span>
+                    <div className="bg-white rounded-lg shadow p-2 lg:sticky lg:top-0 lg:z-10">
+                      <h3 className="text-xs font-semibold text-gray-800 mb-1.5">Tag Summary</h3>
+                      <div className="space-y-1">
+                        <div className="flex items-center justify-between p-1.5 rounded"
+                          style={{ backgroundColor: `${colorPalette['not-familiar']}10` }}>
+                          <div className="flex items-center gap-1.5">
+                            <div className="w-2 h-2 rounded"
+                              style={{ backgroundColor: colorPalette['not-familiar'] }}></div>
+                            <span className="text-xs font-medium">Not Familiar</span>
+                          </div>
+                          <span className="text-xs font-bold">{tagCounts['not-familiar'] || 0}</span>
+                        </div>
+
+                        <div className="flex items-center justify-between p-1.5 rounded"
+                          style={{ backgroundColor: `${colorPalette['somewhat-familiar']}10` }}>
+                          <div className="flex items-center gap-1.5">
+                            <div className="w-2 h-2 rounded"
+                              style={{ backgroundColor: colorPalette['somewhat-familiar'] }}></div>
+                            <span className="text-xs font-medium">Somewhat Familiar</span>
+                          </div>
+                          <span className="text-xs font-bold">{tagCounts['somewhat-familiar'] || 0}</span>
+                        </div>
+                      </div>
+
+                      <div className="mt-1.5 pt-1.5 border-t border-gray-200">
+                        <div className="flex items-center justify-between">
+                          <span className="text-xs font-semibold text-gray-700">Total Tagged</span>
+                          <span className="text-sm font-bold text-primary">{highlights.length}</span>
+                        </div>
+                      </div>
                     </div>
-                    <span className="text-xs font-bold">{tagCounts['not-familiar'] || 0}</span>
-                  </div>
+                  )}
 
-                  <div className="flex items-center justify-between p-1.5 rounded"
-                       style={{ backgroundColor: `${colorPalette['somewhat-familiar']}10` }}>
-                    <div className="flex items-center gap-1.5">
-                      <div className="w-2 h-2 rounded"
-                           style={{ backgroundColor: colorPalette['somewhat-familiar'] }}></div>
-                      <span className="text-xs font-medium">Somewhat Familiar</span>
+                  {/* Individual Tag Suggestions - Below summary */}
+                  {suggestions.length > 0 && (
+                    <div className="bg-white rounded-lg shadow p-3">
+                      <h3 className="text-xs font-semibold text-gray-800 mb-2">
+                        Tagged Phrases & Alternatives
+                      </h3>
+                      <SuggestionsPanel
+                        ref={suggestionsPanelRef}
+                        suggestions={suggestions}
+                        highlights={highlights}
+                        onAccept={handleAccept}
+                        onIgnore={handleIgnore}
+                        onHover={setHoveredHighlightId}
+                        hoveredId={hoveredHighlightId}
+                        colorPalette={colorPalette}
+                      />
                     </div>
-                    <span className="text-xs font-bold">{tagCounts['somewhat-familiar'] || 0}</span>
-                  </div>
-                </div>
-
-                <div className="mt-1.5 pt-1.5 border-t border-gray-200">
-                  <div className="flex items-center justify-between">
-                    <span className="text-xs font-semibold text-gray-700">Total Tagged</span>
-                    <span className="text-sm font-bold text-primary">{highlights.length}</span>
-                  </div>
-                </div>
-              </div>
-            )}
-
-            {/* Individual Tag Suggestions - Below summary */}
-            {suggestions.length > 0 && (
-              <div className="bg-white rounded-lg shadow p-3">
-                <h3 className="text-xs font-semibold text-gray-800 mb-2">
-                  Tagged Phrases & Alternatives
-                </h3>
-                <SuggestionsPanel
-                  ref={suggestionsPanelRef}
-                  suggestions={suggestions}
-                  highlights={highlights}
-                  onAccept={handleAccept}
-                  onIgnore={handleIgnore}
-                  onHover={setHoveredHighlightId}
-                  hoveredId={hoveredHighlightId}
-                  colorPalette={colorPalette}
-                />
-              </div>
-            )}
+                  )}
                 </div>
               )}
 
