@@ -280,7 +280,7 @@ const TextEditor: React.FC<TextEditorProps> = ({
     <div className="relative" ref={editorRef}>
       <PatternDefs />
       <div
-        className="w-full min-h-[300px] p-4 border-2 border-gray-300 rounded-lg focus-within:border-primary transition bg-white text-lg leading-relaxed"
+        className="w-full min-h-[300px] p-3 border-2 border-gray-300 rounded-lg focus-within:border-primary transition bg-white text-sm leading-relaxed"
         onMouseUp={handleTextSelect}
         style={{ userSelect: 'text', cursor: 'text' }}
       >
@@ -318,16 +318,6 @@ const TextEditor: React.FC<TextEditorProps> = ({
               Somewhat familiar
             </div>
           </button>
-          <button
-            onClick={() => handleAddTag('familiar')}
-            className="block w-full text-left px-3 py-2 hover:bg-gray-50 rounded text-sm font-medium transition"
-            style={{ borderLeft: `4px solid ${colorPalette['familiar']}` }}
-          >
-            <div className="flex items-center gap-2">
-              <div className="w-3 h-3 rounded" style={{ backgroundColor: colorPalette['familiar'] }}></div>
-              Familiar
-            </div>
-          </button>
         </div>
       )}
 
@@ -360,16 +350,6 @@ const TextEditor: React.FC<TextEditorProps> = ({
             <div className="flex items-center gap-2">
               <div className="w-3 h-3 rounded" style={{ backgroundColor: colorPalette['somewhat-familiar'] }}></div>
               Somewhat familiar
-            </div>
-          </button>
-          <button
-            onClick={() => handleUpdateTag('familiar')}
-            className="block w-full text-left px-3 py-2 hover:bg-gray-50 rounded text-sm font-medium transition"
-            style={{ borderLeft: `4px solid ${colorPalette['familiar']}` }}
-          >
-            <div className="flex items-center gap-2">
-              <div className="w-3 h-3 rounded" style={{ backgroundColor: colorPalette['familiar'] }}></div>
-              Familiar
             </div>
           </button>
           <hr className="my-2" />

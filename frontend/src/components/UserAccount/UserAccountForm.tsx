@@ -250,7 +250,7 @@ const UserAccountForm: React.FC<UserAccountFormProps> = ({ isLoginMode = false }
     <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-3xl mx-auto">
         <div className="bg-white shadow-lg rounded-lg p-8">
-          <h2 className="text-3xl font-bold text-gray-900 mb-2">
+          <h2 className="text-3xl font-bold mb-2" style={{ color: isLoginMode ? '#3B82F6' : '#111827' }}>
             {isLoginMode ? 'Welcome to SenseAble' : 'Update Your Profile'}
           </h2>
           <p className="text-gray-600 mb-8">
@@ -267,11 +267,11 @@ const UserAccountForm: React.FC<UserAccountFormProps> = ({ isLoginMode = false }
             {isLoginMode ? (
               <>
                 {/* We'd love to know more about you */}
-                <div className="space-y-4">
-                  <h3 className="text-xl font-semibold text-gray-800">We'd love to know more about you</h3>
-                  
+                <div className="space-y-3">
+                  <h3 className="text-lg font-semibold text-gray-800">We'd love to know more about you</h3>
+
                   <div>
-                    <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
+                    <label htmlFor="name" className="block text-xs font-medium text-gray-700 mb-1">
                       Name <span className="text-red-500">*</span>
                     </label>
                     <input
@@ -280,21 +280,21 @@ const UserAccountForm: React.FC<UserAccountFormProps> = ({ isLoginMode = false }
                       value={formData.name}
                       onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                       placeholder="Enter your name"
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
+                      className="w-full px-3 py-1.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
                       required
                     />
                   </div>
 
-                  <div className="grid grid-cols-2 gap-4">
+                  <div className="grid grid-cols-2 gap-3">
                     <div>
-                      <label htmlFor="ageRange" className="block text-sm font-medium text-gray-700 mb-1">
+                      <label htmlFor="ageRange" className="block text-xs font-medium text-gray-700 mb-1">
                         Age Range <span className="text-red-500">*</span>
                       </label>
                       <select
                         id="ageRange"
                         value={formData.ageRange}
                         onChange={(e) => setFormData({ ...formData, ageRange: e.target.value })}
-                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
+                        className="w-full px-3 py-1.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
                         required
                       >
                         <option value="">Select age range</option>
@@ -307,14 +307,14 @@ const UserAccountForm: React.FC<UserAccountFormProps> = ({ isLoginMode = false }
                     </div>
 
                     <div>
-                      <label htmlFor="gender" className="block text-sm font-medium text-gray-700 mb-1">
+                      <label htmlFor="gender" className="block text-xs font-medium text-gray-700 mb-1">
                         Gender <span className="text-red-500">*</span>
                       </label>
                       <select
                         id="gender"
                         value={formData.gender}
                         onChange={(e) => setFormData({ ...formData, gender: e.target.value })}
-                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
+                        className="w-full px-3 py-1.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
                         required
                       >
                         <option value="">Select gender</option>
@@ -326,16 +326,16 @@ const UserAccountForm: React.FC<UserAccountFormProps> = ({ isLoginMode = false }
                     </div>
                   </div>
 
-                  <div className="grid grid-cols-2 gap-4">
+                  <div className="grid grid-cols-2 gap-3">
                     <div>
-                      <label htmlFor="country" className="block text-sm font-medium text-gray-700 mb-1">
+                      <label htmlFor="country" className="block text-xs font-medium text-gray-700 mb-1">
                         Country <span className="text-red-500">*</span>
                       </label>
                       <select
                         id="country"
                         value={formData.country}
                         onChange={(e) => setFormData({ ...formData, country: e.target.value })}
-                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
+                        className="w-full px-3 py-1.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
                         required
                       >
                         <option value="">Select country</option>
@@ -349,14 +349,14 @@ const UserAccountForm: React.FC<UserAccountFormProps> = ({ isLoginMode = false }
                     </div>
 
                     <div>
-                      <label htmlFor="languagePreference" className="block text-sm font-medium text-gray-700 mb-1">
+                      <label htmlFor="languagePreference" className="block text-xs font-medium text-gray-700 mb-1">
                         Language Preference <span className="text-red-500">*</span>
                       </label>
                       <select
                         id="languagePreference"
                         value={formData.languagePreference}
                         onChange={(e) => setFormData({ ...formData, languagePreference: e.target.value })}
-                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
+                        className="w-full px-3 py-1.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
                         required
                       >
                         <option value="">Select language</option>
@@ -369,18 +369,18 @@ const UserAccountForm: React.FC<UserAccountFormProps> = ({ isLoginMode = false }
                 </div>
 
                 {/* Accessibility Needs - Label selection with dropdown */}
-                <div className="space-y-3">
+                <div className="space-y-2">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block text-xs font-medium text-gray-700 mb-1.5">
                       Do you have any accessibility needs? <span className="text-red-500">*</span>
                     </label>
-                    <div className="flex flex-wrap gap-2">
+                    <div className="flex flex-wrap gap-1.5">
                       {accessibilityOptions.map(option => (
                         <button
                           key={option.id}
                           type="button"
                           onClick={() => handleCategoryChange(option.id)}
-                          className={`px-4 py-2 text-sm rounded-lg transition ${
+                          className={`px-3 py-1.5 text-xs rounded-lg transition ${
                             formData.accessibilityCategory === option.id
                               ? 'bg-primary text-white'
                               : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
@@ -395,14 +395,14 @@ const UserAccountForm: React.FC<UserAccountFormProps> = ({ isLoginMode = false }
                   {/* Sub-option dropdown - only show if category is selected and not 'none' */}
                   {formData.accessibilityCategory && formData.accessibilityCategory !== 'none' && (
                     <div>
-                      <label htmlFor="accessibilitySubOption" className="block text-sm font-medium text-gray-700 mb-1">
+                      <label htmlFor="accessibilitySubOption" className="block text-xs font-medium text-gray-700 mb-1">
                         Please specify <span className="text-red-500">*</span>
                       </label>
                       <select
                         id="accessibilitySubOption"
                         value={formData.accessibilitySubOption}
                         onChange={(e) => setFormData({ ...formData, accessibilitySubOption: e.target.value })}
-                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
+                        className="w-full px-3 py-1.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
                         required
                       >
                         <option value="">Select option</option>
@@ -418,16 +418,16 @@ const UserAccountForm: React.FC<UserAccountFormProps> = ({ isLoginMode = false }
 
                 {/* Additional support */}
                 <div>
-                  <label htmlFor="additionalSupport" className="block text-sm font-medium text-gray-700 mb-1">
+                  <label htmlFor="additionalSupport" className="block text-xs font-medium text-gray-700 mb-1">
                     Anything else we should know to support you? <span className="text-gray-500">(Optional)</span>
                   </label>
                   <textarea
                     id="additionalSupport"
                     value={formData.additionalSupport}
                     onChange={(e) => setFormData({ ...formData, additionalSupport: e.target.value })}
-                    placeholder="Share any additional information that would help us better support your needs..."
+                    placeholder="Share any additional information..."
                     rows={2}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent resize-none"
+                    className="w-full px-3 py-1.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent resize-none"
                   />
                 </div>
 

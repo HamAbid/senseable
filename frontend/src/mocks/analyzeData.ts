@@ -100,29 +100,100 @@ export const mockGetSuggestions = (highlights: TextHighlight[], text: string): S
 };
 
 /**
+ * Generate gentle rewrite - minor modifications based on tags
+ * Replaces only "not-familiar" tagged phrases with simpler alternatives
+ */
+export const mockGetGentleRewrite = (text: string, highlights: TextHighlight[]): string => {
+  // Check if this text matches any example
+  const matchingExample = exampleTextsData.examples.find(
+    ex => ex.original_text.trim() === text.trim()
+  );
+
+  if (matchingExample && (matchingExample as any).gentle_rewrite) {
+    // Return the pre-written gentle rewrite from JSON
+    return (matchingExample as any).gentle_rewrite;
+  }
+
+  // Fallback: replace only "not-familiar" tagged phrases
+  let rewrittenText = text;
+  const notFamiliarHighlights = highlights.filter(h => h.familiarityLevel === 'not-familiar');
+  notFamiliarHighlights.sort((a, b) => b.start - a.start).forEach(h => {
+    const simplifiedVersion = `simpler ${h.text}`;
+    rewrittenText = rewrittenText.slice(0, h.start) + simplifiedVersion + rewrittenText.slice(h.end);
+  });
+
+  return rewrittenText;
+};
+
+/**
+ * Generate full rewrite - deeper modifications of content
+ * Replaces all tagged phrases with simpler alternatives
+ */
+export const mockGetFullRewrite = (text: string, highlights: TextHighlight[]): string => {
+  // Check if this text matches any example
+  const matchingExample = exampleTextsData.examples.find(
+    ex => ex.original_text.trim() === text.trim()
+  );
+
+  if (matchingExample && (matchingExample as any).full_rewrite) {
+    // Return the pre-written full rewrite from JSON
+    return (matchingExample as any).full_rewrite;
+  }
+
+  // Fallback: replace all tagged phrases
+  let rewrittenText = text;
+  highlights.sort((a, b) => b.start - a.start).forEach(h => {
+    const simplifiedVersion = `simpler ${h.text}`;
+    rewrittenText = rewrittenText.slice(0, h.start) + simplifiedVersion + rewrittenText.slice(h.end);
+  });
+
+  return rewrittenText;
+};
+
+/**
+ * Handle custom chat instruction and return modified text
+ * If text matches Example 3 or 4, returns Example 5
+ */
+export const mockCustomRephrase = (text: string, instruction: string): string => {
+  // Check if this text matches Example 3 or Example 4
+  const matchingExample = exampleTextsData.examples.find(
+    ex => (ex.id === 3 || ex.id === 4) && ex.original_text.trim() === text.trim()
+  );
+
+  if (matchingExample) {
+    // Return Example 5 as the custom rephrased version
+    const example5 = exampleTextsData.examples.find(ex => ex.id === 5);
+    if (example5) {
+      return example5.original_text;
+    }
+  }
+
+  // Fallback: append instruction effect to the text
+  return `${text}\n\n[Modified based on: "${instruction}"]`;
+};
+
+/**
  * Fallback phrase detection for non-example text
  */
 const detectComplexPhrases = (text: string): TextHighlight[] => {
   const highlights: TextHighlight[] = [];
   const lowerText = text.toLowerCase();
-  
+
   const fallbackPhrases = [
     { text: 'large language model', level: 'not-familiar' as FamiliarityLevel },
     { text: 'LLM agents', level: 'not-familiar' as FamiliarityLevel },
     { text: 'composable patterns', level: 'somewhat-familiar' as FamiliarityLevel },
     { text: 'complex frameworks', level: 'somewhat-familiar' as FamiliarityLevel },
-    { text: 'specialized libraries', level: 'familiar' as FamiliarityLevel },
-    { text: 'implementations', level: 'familiar' as FamiliarityLevel },
   ];
-  
+
   fallbackPhrases.forEach((phrase, index) => {
     const searchText = phrase.text.toLowerCase();
     let startIndex = 0;
-    
+
     while (startIndex < lowerText.length) {
       const start = lowerText.indexOf(searchText, startIndex);
       if (start === -1) break;
-      
+
       highlights.push({
         id: `highlight-${index}-${start}`,
         start,
@@ -130,7 +201,7 @@ const detectComplexPhrases = (text: string): TextHighlight[] => {
         text: text.slice(start, start + phrase.text.length),
         familiarityLevel: phrase.level,
       });
-      
+
       startIndex = start + phrase.text.length;
     }
   });

@@ -40,7 +40,7 @@ const SuggestionsPanel = forwardRef<SuggestionsPanelRef, SuggestionsPanelProps>(
   }
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-2">
       {suggestions.map((suggestion, index) => {
         // Get the tag color for this suggestion
         const tagColor = suggestion.tag ? colorPalette[suggestion.tag] : '#6B7280';
@@ -58,16 +58,16 @@ const SuggestionsPanel = forwardRef<SuggestionsPanelRef, SuggestionsPanelProps>(
                 suggestionRefs.current.set(highlight.id, el);
               }
             }}
-            className={`border rounded-lg p-4 space-y-3 transition-all cursor-pointer ${
+            className={`border rounded-lg p-2 space-y-1.5 transition-all cursor-pointer ${
               isHovered ? 'border-blue-500 bg-blue-50' : 'border-gray-200'
             }`}
             onMouseEnter={() => highlight && onHover(highlight.id)}
             onMouseLeave={() => onHover(null)}
           >
             {/* Original -> Alternative format */}
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-1.5 flex-wrap">
               <span
-                className="text-sm font-medium px-2 py-1 rounded"
+                className="text-xs font-medium px-1.5 py-0.5 rounded"
                 style={{
                   backgroundColor: tagColor,
                   color: '#000000'
@@ -75,32 +75,38 @@ const SuggestionsPanel = forwardRef<SuggestionsPanelRef, SuggestionsPanelProps>(
               >
                 {suggestion.phrase}
               </span>
-              <span className="text-gray-400">→</span>
-              <span className="text-sm font-medium text-gray-800">
+              <span className="text-gray-400 text-xs">→</span>
+              <span className="text-xs font-medium text-gray-800">
                 {firstAlternative}
               </span>
             </div>
 
             {/* Explanation */}
             {suggestion.explanation && (
-              <div className="text-xs text-gray-600 leading-relaxed">
+              <div className="text-xs text-gray-600 leading-snug">
                 {suggestion.explanation}
               </div>
             )}
 
-            {/* Accept and Ignore buttons */}
-            <div className="flex gap-2 pt-2">
+            {/* Compact action buttons at bottom */}
+            <div className="flex gap-1.5 justify-center">
               <button
                 onClick={() => onAccept(suggestion.phrase, firstAlternative)}
-                className="flex-1 px-3 py-2 bg-green-600 hover:bg-green-700 text-white text-sm font-medium rounded transition"
+                className="p-1.5 bg-green-600 hover:bg-green-700 text-white rounded transition flex items-center justify-center"
+                title="Accept"
               >
-                Accept
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+                </svg>
               </button>
               <button
                 onClick={() => onIgnore(suggestion.phrase)}
-                className="flex-1 px-3 py-2 bg-gray-200 hover:bg-gray-300 text-gray-700 text-sm font-medium rounded transition"
+                className="p-1.5 bg-gray-200 hover:bg-gray-300 text-gray-700 rounded transition flex items-center justify-center"
+                title="Ignore"
               >
-                Ignore
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M6 18L18 6M6 6l12 12" />
+                </svg>
               </button>
             </div>
           </div>

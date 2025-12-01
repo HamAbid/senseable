@@ -66,7 +66,6 @@ const ProfileEdit: React.FC = () => {
       }
 
       const preferencesData = {
-        user_id: user.id,
         accessibility_need: primaryAccessibilityNeed,
         reading_level: preferences?.reading_level || 'intermediate' as ReadingLevel,
         preferred_complexity: preferences?.preferred_complexity || 'moderate' as ComplexityLevel,
@@ -81,7 +80,7 @@ const ProfileEdit: React.FC = () => {
         },
       };
 
-      const updatedPreferences = await userService.updatePreferences(preferencesData);
+      const updatedPreferences = await userService.updatePreferences(user.id, preferencesData);
       setPreferences(updatedPreferences);
       setSaveMessage('Profile updated successfully!');
       setTimeout(() => setSaveMessage(''), 3000);
@@ -111,7 +110,7 @@ const ProfileEdit: React.FC = () => {
             type="text"
             value={formData.name}
             onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-            className="w-full px-3 py-2 text-sm border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-primary"
+            className="w-full px-3 py-2 text-sm border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-primary bg-gray-100 cursor-not-allowed"
             disabled
           />
         </div>
@@ -122,7 +121,8 @@ const ProfileEdit: React.FC = () => {
           <select
             value={formData.ageRange}
             onChange={(e) => setFormData({ ...formData, ageRange: e.target.value })}
-            className="w-full px-3 py-2 text-sm border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-primary"
+            className="w-full px-3 py-2 text-sm border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-primary bg-gray-100 cursor-not-allowed"
+            disabled
           >
             <option value="">Select age range</option>
             <option value="18-24">18-24</option>
@@ -139,7 +139,8 @@ const ProfileEdit: React.FC = () => {
           <select
             value={formData.gender}
             onChange={(e) => setFormData({ ...formData, gender: e.target.value })}
-            className="w-full px-3 py-2 text-sm border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-primary"
+            className="w-full px-3 py-2 text-sm border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-primary bg-gray-100 cursor-not-allowed"
+            disabled
           >
             <option value="">Select gender</option>
             <option value="male">Male</option>
@@ -156,8 +157,9 @@ const ProfileEdit: React.FC = () => {
             type="text"
             value={formData.country}
             onChange={(e) => setFormData({ ...formData, country: e.target.value })}
-            className="w-full px-3 py-2 text-sm border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-primary"
+            className="w-full px-3 py-2 text-sm border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-primary bg-gray-100 cursor-not-allowed"
             placeholder="e.g., India"
+            disabled
           />
         </div>
 

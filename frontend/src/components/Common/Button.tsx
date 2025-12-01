@@ -11,10 +11,11 @@ const Button: React.FC<ButtonProps> = ({
   size = 'md',
   children,
   className = '',
+  disabled = false,
   ...props
 }) => {
   const baseClasses = 'rounded-lg font-medium transition focus:outline-none focus:ring-2 focus:ring-offset-2';
-  
+
   const variantClasses = {
     primary: 'bg-primary text-white hover:bg-primary/90 focus:ring-primary',
     secondary: 'bg-secondary text-white hover:bg-secondary/90 focus:ring-secondary',
@@ -28,9 +29,12 @@ const Button: React.FC<ButtonProps> = ({
     lg: 'px-6 py-3 text-lg',
   };
 
+  const disabledClasses = 'disabled:bg-gray-300 disabled:text-gray-500 disabled:cursor-not-allowed disabled:opacity-60 disabled:hover:bg-gray-300';
+
   return (
     <button
-      className={`${baseClasses} ${variantClasses[variant]} ${sizeClasses[size]} ${className}`}
+      className={`${baseClasses} ${variantClasses[variant]} ${sizeClasses[size]} ${disabledClasses} ${className}`}
+      disabled={disabled}
       {...props}
     >
       {children}

@@ -6,9 +6,11 @@ import Button from '../components/Common/Button';
 import TextEditor from '../components/RephraseText/TextEditor';
 import SuggestionsPanel, { SuggestionsPanelRef } from '../components/RephraseText/SuggestionsPanel';
 import ProfileEdit from '../components/RephraseText/ProfileEdit';
+import Chat from '../components/RephraseText/Chat';
+import RewritePane from '../components/RephraseText/RewritePane';
 import { TextHighlight, Suggestion, FamiliarityLevel } from '../types';
 import { defaultColorPalette } from '../utils/colorPalettes';
-import { mockAnalyzeText, mockGetSuggestions } from '../mocks/analyzeData';
+import { mockAnalyzeText, mockGetSuggestions, mockGetGentleRewrite, mockGetFullRewrite, mockCustomRephrase } from '../mocks/analyzeData';
 
 const RephraseTextPage: React.FC = () => {
   const { user, preferences } = useUser();
@@ -18,10 +20,13 @@ const RephraseTextPage: React.FC = () => {
   const [highlights, setHighlights] = useState<TextHighlight[]>([]);
   const [suggestions, setSuggestions] = useState<Suggestion[]>([]);
   const [isAnalyzed, setIsAnalyzed] = useState(false);
+  const [showRewritePane, setShowRewritePane] = useState(false);
+  const [gentleRewrite, setGentleRewrite] = useState('');
+  const [fullRewrite, setFullRewrite] = useState('');
   const [loading, setLoading] = useState(false);
   const [hoveredHighlightId, setHoveredHighlightId] = useState<string | null>(null);
   const [acceptedReplacements, setAcceptedReplacements] = useState<Map<number, string>>(new Map());
-  const [activeTab, setActiveTab] = useState<'tags' | 'profile'>('tags');
+  const [activeTab, setActiveTab] = useState<'tags' | 'profile' | 'chat'>('profile');
 
   const suggestionsPanelRef = useRef<SuggestionsPanelRef>(null);
 
@@ -33,14 +38,15 @@ const RephraseTextPage: React.FC = () => {
     }
   }, [user, navigate]);
 
-  // Re-render highlights when color palette changes (e.g., accessibility settings updated)
+  // Re-render highlights when accessibility preferences change
   useEffect(() => {
-    // Force re-render of TextEditor component when colorPalette changes
+    // Force re-render of TextEditor component when color palette changes
     if (isAnalyzed && highlights.length > 0) {
       // Trigger a re-render by creating new array reference
-      setHighlights([...highlights]);
+      setHighlights(prev => [...prev]);
     }
-  }, [colorPalette]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [preferences?.color_palette, preferences?.accessibility_need, isAnalyzed]);
 
   // Count tags by familiarity level
   const tagCounts = highlights.reduce((acc, h) => {
@@ -54,28 +60,35 @@ const RephraseTextPage: React.FC = () => {
     if (!originalText.trim()) return;
 
     setLoading(true);
+    setShowRewritePane(false);
 
-    // Simulate API call with mock data
+    // Simulate API call with mock data - analyze and show tags + suggestions immediately
     setTimeout(() => {
       const analyzed = mockAnalyzeText(originalText);
       setHighlights(analyzed);
+
+      // Generate suggestions immediately for each tagged phrase
+      const newSuggestions = mockGetSuggestions(analyzed, originalText);
+      setSuggestions(newSuggestions);
+
       setIsAnalyzed(true);
+      setActiveTab('tags'); // Switch to tags tab after analyze
       setLoading(false);
     }, 800);
   };
 
-  const handleRephrase = () => {
-    if (!isAnalyzed) {
-      handleAnalyze();
-      return;
-    }
+  const handleRewrite = () => {
+    if (!isAnalyzed) return;
 
     setLoading(true);
 
-    // Generate suggestions for each highlighted phrase using mock data
+    // Generate gentle and full rewrites
     setTimeout(() => {
-      const newSuggestions = mockGetSuggestions(highlights, originalText);
-      setSuggestions(newSuggestions);
+      const gentle = mockGetGentleRewrite(originalText, highlights);
+      const full = mockGetFullRewrite(originalText, highlights);
+      setGentleRewrite(gentle);
+      setFullRewrite(full);
+      setShowRewritePane(true);
       setLoading(false);
     }, 800);
   };
@@ -99,8 +112,25 @@ const RephraseTextPage: React.FC = () => {
     setHighlights([]);
     setSuggestions([]);
     setIsAnalyzed(false);
+    setShowRewritePane(false);
+    setGentleRewrite('');
+    setFullRewrite('');
     setAcceptedReplacements(new Map());
     setHoveredHighlightId(null);
+    setActiveTab('profile'); // Switch back to profile tab on reset
+  };
+
+  const handleAcceptRewrite = (version: 'gentle' | 'full', text: string) => {
+    // Replace original text with accepted version
+    setOriginalText(text);
+    // Reset states to allow iteration
+    setHighlights([]);
+    setIsAnalyzed(false);
+    setShowRewritePane(false);
+    setGentleRewrite('');
+    setFullRewrite('');
+    // Keep chat enabled for further modifications
+    setActiveTab('chat');
   };
 
   const handleAccept = (phrase: string, replacement: string) => {
@@ -152,6 +182,21 @@ const RephraseTextPage: React.FC = () => {
     suggestionsPanelRef.current?.scrollToSuggestion(highlightId);
   };
 
+  const handleCustomRephrase = (instruction: string) => {
+    // Handle custom rephrasing based on user instruction
+    // Simulate custom modification (in real app, this would be an API call)
+    setTimeout(() => {
+      const modifiedText = mockCustomRephrase(originalText, instruction);
+      setOriginalText(modifiedText);
+
+      // Reset analysis state to allow re-analyzing the modified text
+      setHighlights([]);
+      setSuggestions([]);
+      setIsAnalyzed(false);
+      setShowRewritePane(false);
+    }, 500);
+  };
+
   if (!user) {
     return null;
   }
@@ -165,9 +210,9 @@ const RephraseTextPage: React.FC = () => {
           {/* Main Content Area */}
           <div className="lg:col-span-2 space-y-6">
             {/* Text Input/Editor */}
-            <div className="bg-white rounded-lg shadow p-6">
-              <div className="flex justify-between items-center mb-4">
-                <h2 className="text-xl font-semibold text-gray-800">
+            <div className="bg-white rounded-lg shadow p-4">
+              <div className="flex justify-between items-center mb-3">
+                <h2 className="text-base font-semibold text-gray-800">
                   {isAnalyzed ? 'Analyzed Text' : 'Original Text'}
                 </h2>
                 {isAnalyzed && (
@@ -186,7 +231,7 @@ const RephraseTextPage: React.FC = () => {
                   value={originalText}
                   onChange={(e) => setOriginalText(e.target.value)}
                   placeholder="Paste or type the text you want to analyze and rephrase..."
-                  className="w-full min-h-[300px] p-4 border-2 border-gray-300 rounded-lg focus:border-primary focus:outline-none resize-none text-lg leading-relaxed"
+                  className="w-full min-h-[300px] p-3 border-2 border-gray-300 rounded-lg focus:border-primary focus:outline-none resize-none text-sm leading-relaxed"
                 />
               ) : (
                 <TextEditor
@@ -204,24 +249,33 @@ const RephraseTextPage: React.FC = () => {
                 />
               )}
 
-              <div className="flex gap-4 mt-4">
+              <div className="flex justify-center mt-4">
                 <Button
-                  onClick={handleRephrase}
+                  onClick={isAnalyzed ? handleRewrite : handleAnalyze}
                   disabled={loading || !originalText.trim()}
-                  className="flex-1"
+                  className="px-8"
                 >
-                  {loading ? 'Processing...' : isAnalyzed ? 'Get Rephrase Suggestions' : 'Analyze'}
+                  {loading ? 'Processing...' : isAnalyzed ? 'Rewrite' : 'Analyze'}
                 </Button>
               </div>
 
               {isAnalyzed && (
-                <div className="mt-4 p-3 bg-gray-50 rounded-lg">
-                  <p className="text-sm text-gray-600">
-                    💡 <strong>Tip:</strong> Select any text to add or modify tags. Click on highlighted text to change its familiarity level.
+                <div className="mt-3 p-2 bg-gray-50 rounded-lg">
+                  <p className="text-xs text-gray-600">
+                    💡 <strong>Tip:</strong> Check the Tags panel to see alternatives for each tagged phrase, or click Rewrite to see full rewritten versions.
                   </p>
                 </div>
               )}
             </div>
+
+            {/* Rewrite Pane - Shows below main content after clicking Rewrite */}
+            {showRewritePane && (
+              <RewritePane
+                gentleRewrite={gentleRewrite}
+                fullRewrite={fullRewrite}
+                onAccept={handleAcceptRewrite}
+              />
+            )}
 
           </div>
 
@@ -231,18 +285,34 @@ const RephraseTextPage: React.FC = () => {
             <div className="bg-white rounded-lg shadow">
               <div className="flex border-b">
                 <button
-                  onClick={() => setActiveTab('tags')}
-                  className={`flex-1 px-4 py-3 text-sm font-medium transition ${
+                  onClick={() => isAnalyzed && setActiveTab('tags')}
+                  disabled={!isAnalyzed}
+                  className={`flex-1 px-3 py-2 text-xs font-medium transition ${
                     activeTab === 'tags'
                       ? 'text-primary border-b-2 border-primary'
+                      : !isAnalyzed
+                      ? 'text-gray-400 cursor-not-allowed'
                       : 'text-gray-600 hover:text-gray-800'
                   }`}
                 >
                   Tags
                 </button>
                 <button
+                  onClick={() => originalText.trim() && setActiveTab('chat')}
+                  disabled={!originalText.trim()}
+                  className={`flex-1 px-3 py-2 text-xs font-medium transition ${
+                    activeTab === 'chat'
+                      ? 'text-primary border-b-2 border-primary'
+                      : !originalText.trim()
+                      ? 'text-gray-400 cursor-not-allowed'
+                      : 'text-gray-600 hover:text-gray-800'
+                  }`}
+                >
+                  Chat
+                </button>
+                <button
                   onClick={() => setActiveTab('profile')}
-                  className={`flex-1 px-4 py-3 text-sm font-medium transition ${
+                  className={`flex-1 px-3 py-2 text-xs font-medium transition ${
                     activeTab === 'profile'
                       ? 'text-primary border-b-2 border-primary'
                       : 'text-gray-600 hover:text-gray-800'
@@ -259,54 +329,44 @@ const RephraseTextPage: React.FC = () => {
                 <div className="space-y-4">
                   {/* Tag Summary - Compact version at top */}
                   {isAnalyzed && (
-              <div className="bg-white rounded-lg shadow p-3 lg:sticky lg:top-0 lg:z-10">
-                <h3 className="text-sm font-semibold text-gray-800 mb-2">Tag Summary</h3>
-                <div className="space-y-1.5">
-                  <div className="flex items-center justify-between p-2 rounded"
+              <div className="bg-white rounded-lg shadow p-2 lg:sticky lg:top-0 lg:z-10">
+                <h3 className="text-xs font-semibold text-gray-800 mb-1.5">Tag Summary</h3>
+                <div className="space-y-1">
+                  <div className="flex items-center justify-between p-1.5 rounded"
                        style={{ backgroundColor: `${colorPalette['not-familiar']}10` }}>
-                    <div className="flex items-center gap-2">
-                      <div className="w-3 h-3 rounded"
+                    <div className="flex items-center gap-1.5">
+                      <div className="w-2 h-2 rounded"
                            style={{ backgroundColor: colorPalette['not-familiar'] }}></div>
                       <span className="text-xs font-medium">Not Familiar</span>
                     </div>
-                    <span className="text-sm font-bold">{tagCounts['not-familiar'] || 0}</span>
+                    <span className="text-xs font-bold">{tagCounts['not-familiar'] || 0}</span>
                   </div>
 
-                  <div className="flex items-center justify-between p-2 rounded"
+                  <div className="flex items-center justify-between p-1.5 rounded"
                        style={{ backgroundColor: `${colorPalette['somewhat-familiar']}10` }}>
-                    <div className="flex items-center gap-2">
-                      <div className="w-3 h-3 rounded"
+                    <div className="flex items-center gap-1.5">
+                      <div className="w-2 h-2 rounded"
                            style={{ backgroundColor: colorPalette['somewhat-familiar'] }}></div>
                       <span className="text-xs font-medium">Somewhat Familiar</span>
                     </div>
-                    <span className="text-sm font-bold">{tagCounts['somewhat-familiar'] || 0}</span>
-                  </div>
-
-                  <div className="flex items-center justify-between p-2 rounded"
-                       style={{ backgroundColor: `${colorPalette['familiar']}10` }}>
-                    <div className="flex items-center gap-2">
-                      <div className="w-3 h-3 rounded"
-                           style={{ backgroundColor: colorPalette['familiar'] }}></div>
-                      <span className="text-xs font-medium">Familiar</span>
-                    </div>
-                    <span className="text-sm font-bold">{tagCounts['familiar'] || 0}</span>
+                    <span className="text-xs font-bold">{tagCounts['somewhat-familiar'] || 0}</span>
                   </div>
                 </div>
 
-                <div className="mt-2 pt-2 border-t border-gray-200">
+                <div className="mt-1.5 pt-1.5 border-t border-gray-200">
                   <div className="flex items-center justify-between">
                     <span className="text-xs font-semibold text-gray-700">Total Tagged</span>
-                    <span className="text-lg font-bold text-primary">{highlights.length}</span>
+                    <span className="text-sm font-bold text-primary">{highlights.length}</span>
                   </div>
                 </div>
               </div>
             )}
 
-            {/* Rephrase Suggestions - Below summary */}
+            {/* Individual Tag Suggestions - Below summary */}
             {suggestions.length > 0 && (
-              <div className="bg-white rounded-lg shadow p-4">
-                <h3 className="text-sm font-semibold text-gray-800 mb-3">
-                  Rephrase Suggestions
+              <div className="bg-white rounded-lg shadow p-3">
+                <h3 className="text-xs font-semibold text-gray-800 mb-2">
+                  Tagged Phrases & Alternatives
                 </h3>
                 <SuggestionsPanel
                   ref={suggestionsPanelRef}
@@ -324,9 +384,19 @@ const RephraseTextPage: React.FC = () => {
               )}
 
               {activeTab === 'profile' && (
-                <div className="bg-white rounded-lg shadow p-4">
-                  <h3 className="text-sm font-semibold text-gray-800 mb-4">Update Profile</h3>
+                <div className="bg-white rounded-lg shadow p-3">
+                  <h3 className="text-xs font-semibold text-gray-800 mb-3">Update Profile</h3>
                   <ProfileEdit />
+                </div>
+              )}
+
+              {activeTab === 'chat' && (
+                <div className="bg-white rounded-lg shadow p-3">
+                  <h3 className="text-xs font-semibold text-gray-800 mb-3">Custom Instructions</h3>
+                  <Chat
+                    originalText={originalText}
+                    onCustomRephrase={handleCustomRephrase}
+                  />
                 </div>
               )}
             </div>
