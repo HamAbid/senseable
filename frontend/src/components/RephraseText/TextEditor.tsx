@@ -189,11 +189,12 @@ const TextEditor: React.FC<TextEditorProps> = ({
         );
       }
 
-      // Get colors and patterns
+      // Get colors, patterns, and icons
       const familiarityLevel = highlight.familiarityLevel || 'familiar';
       const backgroundColor = colorPalette[familiarityLevel];
       const textColor = colorPalette.textColors?.[familiarityLevel];
       const pattern = colorPalette.patterns?.[familiarityLevel];
+      const icon = colorPalette.icons?.[familiarityLevel];
       const isHovered = highlight.id === hoveredHighlightId;
 
       // Build background style with pattern overlay
@@ -240,6 +241,7 @@ const TextEditor: React.FC<TextEditorProps> = ({
             />
           )}
           <span style={{ position: 'relative', zIndex: 1 }}>
+            {icon && <span style={{ marginRight: '4px', fontWeight: 'bold' }}>{icon}</span>}
             {text.slice(highlight.start, highlight.end)}
           </span>
         </mark>

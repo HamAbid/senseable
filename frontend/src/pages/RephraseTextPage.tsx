@@ -214,56 +214,9 @@ const RephraseTextPage: React.FC = () => {
             {/* Text Input/Editor */}
             <div className="bg-white rounded-lg shadow p-4">
               <div className="flex justify-between items-center mb-3">
-                <div className="flex items-center gap-2">
-                  <h2 className="text-base font-semibold text-gray-800">
-                    {isAnalyzed ? 'Analyzed Text' : 'Original Text'}
-                  </h2>
-                  {!isAnalyzed && (
-                    <div className="relative">
-                      <button
-                        onClick={() => setShowExamplesPopover(!showExamplesPopover)}
-                        className="p-1.5 text-gray-500 hover:text-primary hover:bg-gray-100 rounded-full transition-all"
-                        title="Load example text"
-                      >
-                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-                        </svg>
-                      </button>
-                      {showExamplesPopover && (
-                        <>
-                          <div
-                            className="fixed inset-0 z-10"
-                            onClick={() => setShowExamplesPopover(false)}
-                          />
-                          <div className="absolute top-full left-0 mt-2 bg-white rounded-lg shadow-lg border border-gray-200 p-2 z-20 min-w-[200px]">
-                            <div className="text-xs font-semibold text-gray-600 px-2 py-1 mb-1">Load Example:</div>
-                            {[
-                              { id: 1, label: 'Cotton Curtains' },
-                              { id: 2, label: 'AI Agents' },
-                              { id: 6, label: 'Japanese Festival' },
-                            ].map((example) => {
-                              const exampleData = exampleTexts.examples.find(e => e.id === example.id);
-                              return (
-                                <button
-                                  key={example.id}
-                                  onClick={() => {
-                                    if (exampleData) {
-                                      setOriginalText(exampleData.original_text);
-                                      setShowExamplesPopover(false);
-                                    }
-                                  }}
-                                  className="w-full text-left px-3 py-2 text-sm text-gray-700 hover:bg-primary/10 hover:text-primary rounded transition-colors"
-                                >
-                                  {example.label}
-                                </button>
-                              );
-                            })}
-                          </div>
-                        </>
-                      )}
-                    </div>
-                  )}
-                </div>
+                <h2 className="text-base font-semibold text-gray-800">
+                  {isAnalyzed ? 'Analyzed Text' : 'Original Text'}
+                </h2>
                 {isAnalyzed && (
                   <button
                     onClick={handleReset}
@@ -273,6 +226,42 @@ const RephraseTextPage: React.FC = () => {
                   </button>
                 )}
               </div>
+
+              {/* Example Text Buttons and Note - Only show when not analyzed */}
+              {!isAnalyzed && (
+                <div className="mb-4 p-3 bg-amber-50 border border-amber-200 rounded-lg">
+                  <div className="flex items-start gap-2 mb-3">
+                    <span className="text-amber-600 text-sm">⚠️</span>
+                    <p className="text-xs text-amber-800 leading-relaxed">
+                      Please use the example texts provided to explore this demo. Due to internal security requirements, we're unable to host the models and resources needed for a fully interactive or live experience.
+                    </p>
+                  </div>
+                  <div className="flex gap-2 flex-wrap">
+                    <button
+                      onClick={() => {
+                        const exampleData = exampleTexts.examples.find(e => e.id === 6);
+                        if (exampleData) {
+                          setOriginalText(exampleData.original_text);
+                        }
+                      }}
+                      className="px-4 py-2 text-sm font-medium text-white bg-primary hover:bg-primary/90 rounded-lg transition-colors"
+                    >
+                      Example 1: Japanese Festival
+                    </button>
+                    <button
+                      onClick={() => {
+                        const exampleData = exampleTexts.examples.find(e => e.id === 1);
+                        if (exampleData) {
+                          setOriginalText(exampleData.original_text);
+                        }
+                      }}
+                      className="px-4 py-2 text-sm font-medium text-white bg-primary hover:bg-primary/90 rounded-lg transition-colors"
+                    >
+                      Example 2: Cotton Curtains
+                    </button>
+                  </div>
+                </div>
+              )}
 
               {!isAnalyzed ? (
                 <textarea

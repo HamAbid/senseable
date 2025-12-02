@@ -67,6 +67,11 @@ export interface ColorPalette {
     'somewhat-familiar': string;
     'familiar': string;
   };
+  icons?: {
+    'not-familiar': string;
+    'somewhat-familiar': string;
+    'familiar': string;
+  };
 }
 
 export interface Tag {
