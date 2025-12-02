@@ -44,6 +44,8 @@ const SuggestionsPanel = forwardRef<SuggestionsPanelRef, SuggestionsPanelProps>(
       {suggestions.map((suggestion, index) => {
         // Get the tag color for this suggestion
         const tagColor = suggestion.tag ? colorPalette[suggestion.tag] : '#6B7280';
+        const textColor = suggestion.tag && colorPalette.textColors ? colorPalette.textColors[suggestion.tag] : '#000000';
+        const icon = suggestion.tag && colorPalette.icons ? colorPalette.icons[suggestion.tag] : null;
         const firstAlternative = suggestion.alternatives[0] || suggestion.phrase;
 
         // Find the corresponding highlight
@@ -70,9 +72,10 @@ const SuggestionsPanel = forwardRef<SuggestionsPanelRef, SuggestionsPanelProps>(
                 className="text-xs font-medium px-1.5 py-0.5 rounded"
                 style={{
                   backgroundColor: tagColor,
-                  color: '#000000'
+                  color: textColor
                 }}
               >
+                {icon && <span style={{ marginRight: '4px', fontWeight: 'bold' }}>{icon}</span>}
                 {suggestion.phrase}
               </span>
               <span className="text-gray-400 text-xs">→</span>
