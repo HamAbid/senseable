@@ -11,12 +11,14 @@ import { useUser } from '../context/UserContext';
 import { mockAnalyzeText, mockCustomRephrase, mockGetFullRewrite, mockGetGentleRewrite, mockGetSuggestions } from '../mocks/analyzeData';
 import { FamiliarityLevel, Suggestion, TextHighlight } from '../types';
 import { defaultColorPalette } from '../utils/colorPalettes';
+import exampleTexts from '../mocks/exampleTexts.json';
 
 const RephraseTextPage: React.FC = () => {
   const { user, preferences } = useUser();
   const navigate = useNavigate();
 
   const [originalText, setOriginalText] = useState('');
+  const [showExamplesPopover, setShowExamplesPopover] = useState(false);
   const [highlights, setHighlights] = useState<TextHighlight[]>([]);
   const [suggestions, setSuggestions] = useState<Suggestion[]>([]);
   const [isAnalyzed, setIsAnalyzed] = useState(false);
@@ -212,17 +214,63 @@ const RephraseTextPage: React.FC = () => {
             {/* Text Input/Editor */}
             <div className="bg-white rounded-lg shadow p-4">
               <div className="flex justify-between items-center mb-3">
-                <h2 className="text-base font-semibold text-gray-800">
-                  {isAnalyzed ? 'Analyzed Text' : 'Original Text'}
-                </h2>
+                <div className="flex items-center gap-2">
+                  <h2 className="text-base font-semibold text-gray-800">
+                    {isAnalyzed ? 'Analyzed Text' : 'Original Text'}
+                  </h2>
+                  {!isAnalyzed && (
+                    <div className="relative">
+                      <button
+                        onClick={() => setShowExamplesPopover(!showExamplesPopover)}
+                        className="p-1.5 text-gray-500 hover:text-primary hover:bg-gray-100 rounded-full transition-all"
+                        title="Load example text"
+                      >
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                        </svg>
+                      </button>
+                      {showExamplesPopover && (
+                        <>
+                          <div
+                            className="fixed inset-0 z-10"
+                            onClick={() => setShowExamplesPopover(false)}
+                          />
+                          <div className="absolute top-full left-0 mt-2 bg-white rounded-lg shadow-lg border border-gray-200 p-2 z-20 min-w-[200px]">
+                            <div className="text-xs font-semibold text-gray-600 px-2 py-1 mb-1">Load Example:</div>
+                            {[
+                              { id: 1, label: 'Cotton Curtains' },
+                              { id: 2, label: 'AI Agents' },
+                              { id: 6, label: 'Japanese Festival' },
+                            ].map((example) => {
+                              const exampleData = exampleTexts.examples.find(e => e.id === example.id);
+                              return (
+                                <button
+                                  key={example.id}
+                                  onClick={() => {
+                                    if (exampleData) {
+                                      setOriginalText(exampleData.original_text);
+                                      setShowExamplesPopover(false);
+                                    }
+                                  }}
+                                  className="w-full text-left px-3 py-2 text-sm text-gray-700 hover:bg-primary/10 hover:text-primary rounded transition-colors"
+                                >
+                                  {example.label}
+                                </button>
+                              );
+                            })}
+                          </div>
+                        </>
+                      )}
+                    </div>
+                  )}
+                </div>
                 {isAnalyzed && (
-                  <Button
-                    variant="outline"
-                    size="sm"
+                  <button
                     onClick={handleReset}
+                    className="px-3 py-1.5 text-sm text-gray-600 hover:text-gray-800 hover:bg-gray-100 border border-gray-300 rounded-lg transition-colors"
                   >
-                    Start Over
-                  </Button>
+                    ↻ Start Over
+                  </button>
                 )}
               </div>
 

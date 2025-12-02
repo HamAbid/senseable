@@ -2,7 +2,20 @@ export interface User {
   id: number;
   email: string;
   name: string;
-  createdAt?: string;
+  created_at?: string;
+  updated_at?: string;
+}
+
+export interface OtherPreferences {
+  ageRange?: string;
+  gender?: string;
+  country?: string;
+  languagePreference?: string;
+  accessibilityNeeds?: string[];
+  accessibilityCategory?: string;
+  accessibilitySubOption?: string;
+  additionalSupport?: string;
+  consentGiven?: boolean;
 }
 
 export interface UserPreferences {
@@ -12,7 +25,9 @@ export interface UserPreferences {
   reading_level: ReadingLevel;
   preferred_complexity: ComplexityLevel;
   color_palette: ColorPalette;
-  other_preferences?: Record<string, unknown>;
+  other_preferences?: OtherPreferences;
+  created_at?: string;
+  updated_at?: string;
 }
 
 export type AccessibilityNeed = 

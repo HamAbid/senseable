@@ -1,111 +1,98 @@
-# SenseAble - AI Accessibility Tool
+# 🎯 SenseAble - Personalized Text Accessibility
 
-SenseAble is an AI-powered application designed to help people with accessibility needs better understand text content. It provides intelligent text rephrasing, highlighting, and tagging features tailored to individual user preferences.
+An intelligent text rephrasing tool that adapts content based on individual accessibility needs.
 
-## Features
+## ✨ Features
 
-- **User Account Management**: Create personalized profiles with accessibility preferences
-- **AI-Powered Text Rephrasing**: Rephrase complex text based on user needs
-- **Smart Highlighting & Tagging**: Mark unfamiliar phrases and track learning progress
-- **Multiple Versions**: Generate and compare different rephrased versions
-- **Accessibility-First Design**: Color palettes for colorblindness, dyslexia support, and more
-- **Personalized Suggestions**: Get alternative phrasings based on your familiarity level
+- Smart text analysis with phrase tagging
+- Gentle & Full rewrites
+- Custom chat instructions
+- Accessibility-based color palettes
+- Interactive suggestions (Accept/Ignore)
+- Iterative refinement workflow
 
-## Technology Stack
+## 🚀 Quick Start
 
-### Frontend
-- React 18 with TypeScript
-- Vite (build tool)
-- TailwindCSS (styling)
-- React Router (navigation)
-- Axios (API calls)
+### Test Demo Locally (No Backend)
 
-### Backend
-- Python 3.10+
-- FastAPI (web framework)
-- SQLAlchemy (ORM)
-- SQLite (database)
-- OpenAI API (text rephrasing)
-
-## Project Structure
-
-```
-senseable/
-├── frontend/               # React frontend application
-├── backend/               # FastAPI backend application
-├── docs/                  # Documentation
-└── screens/              # UI screenshots
-```
-
-## Getting Started
-
-### Prerequisites
-- Node.js 18+ and npm
-- Python 3.10+
-- OpenAI API key (optional, for AI features)
-
-### Backend Setup
-
-1. Navigate to backend directory and create virtual environment:
 ```bash
-cd backend
-python -m venv venv
-venv\Scripts\activate  # Windows PowerShell
-# source venv/bin/activate  # Linux/Mac/WSL
-```
-
-2. Install dependencies:
-```bash
-pip install -r requirements.txt
-```
-
-3. Set up environment variables (copy `.env.example` to `.env` and configure)
-
-4. Start server: `uvicorn app.main:app --reload --port 8000`
-
-Note: SQLite database will be created automatically on first run.
-
-Backend: http://localhost:8000 | API Docs: http://localhost:8000/docs
-
-### Frontend Setup
-
-**Important**: If using WSL, run frontend commands in Windows PowerShell (not WSL) to use Windows-installed Node.js.
-
-1. Navigate to frontend directory (in Windows PowerShell):
-```powershell
-cd C:\Users\t-ha\projects\senseable\frontend
-npm install
-npm run dev
-```
-
-Or install Node.js in WSL:
-```bash
-# In WSL terminal
 cd frontend
 npm install
 npm run dev
 ```
 
-Frontend: http://localhost:3000
+Open http://localhost:3000 ✨ Works with localStorage!
 
-## Usage
+### Use with Backend
 
-1. **Create Account** with accessibility preferences
-2. **Paste Text** you want to understand
-3. **Rephrase** to get accessible version
-4. **Highlight & Tag** unfamiliar phrases
-5. **Get Suggestions** and compare versions
+First, enable backend mode in `frontend/.env.local`:
+```env
+VITE_DEMO_MODE=false
+VITE_API_URL=http://localhost:8000
+```
 
-## Documentation
+Then run both backend and frontend:
+```bash
+# Terminal 1: Backend
+cd backend && go run main.go
 
-- See `docs/technical_design.md` for architecture details
-- See `backend/README.md` for API documentation
-- See `frontend/README.md` for frontend details
+# Terminal 2: Frontend
+cd frontend && npm run dev
+```
 
-## Future Enhancements
+## 📦 Deployment
 
-- Graph database for tag relationships
-- Browser extension
-- Mobile app
-- Voice input/output
-- Multi-language support
+**See [DEPLOYMENT.md](./DEPLOYMENT.md) for:**
+- Deploy demo to GitHub Pages (5 min)
+- Deploy with backend (Railway, Render, etc.)
+- Switch between demo/production modes
+- All hosting options
+
+## 🛠️ Tech Stack
+
+**Frontend:** React, TypeScript, Vite, Tailwind  
+**Backend:** Go, PostgreSQL (optional for demo)
+
+## 🎭 Two Modes
+
+**Demo Mode** (Default)
+- Uses localStorage
+- No backend needed
+- Perfect for GitHub Pages
+- Free hosting
+
+**Production Mode**
+- Full backend API
+- PostgreSQL database
+- Multi-device sync
+
+Switch with one variable:
+```env
+VITE_DEMO_MODE=true   # Demo
+VITE_DEMO_MODE=false  # Production
+```
+
+## 📁 Project Structure
+
+```
+senseable/
+├── frontend/          # React app
+├── backend/           # Go API (optional)
+├── README.md          # This file
+└── DEPLOYMENT.md      # All deployment info
+```
+
+## 🔧 Configuration
+
+| Variable | Demo | Production |
+|----------|------|------------|
+| `VITE_DEMO_MODE` | `true` | `false` |
+| `VITE_API_URL` | - | `https://api.com` |
+
+## 🐛 Troubleshooting
+
+Check [DEPLOYMENT.md](./DEPLOYMENT.md#troubleshooting) for common issues.
+
+---
+
+**Ready to deploy?** → [DEPLOYMENT.md](./DEPLOYMENT.md)
