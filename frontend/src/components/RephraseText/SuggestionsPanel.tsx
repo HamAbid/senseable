@@ -73,15 +73,14 @@ const SuggestionsPanel = forwardRef<SuggestionsPanelRef, SuggestionsPanelProps>(
                 suggestionRefs.current.set(highlight.id, el);
               }
             }}
-            className={`border rounded-lg p-2 space-y-1.5 transition-all cursor-pointer ${
+            className={`border rounded-lg p-3 space-y-2 transition-all ${
               isHovered ? 'border-blue-500 bg-blue-50' : 'border-gray-200'
             }`}
             onMouseEnter={() => highlight && onHover(highlight.id)}
             onMouseLeave={() => onHover(null)}
-            onClick={toggleExpanded}
           >
-            {/* Original -> Alternative format */}
-            <div className="flex items-center gap-1.5 flex-wrap">
+            {/* Phrase -> Simpler format */}
+            <div className="flex items-center gap-2 flex-wrap">
               <span
                 className="text-sm font-medium px-2 py-1 rounded"
                 style={{
@@ -98,34 +97,30 @@ const SuggestionsPanel = forwardRef<SuggestionsPanelRef, SuggestionsPanelProps>(
               </span>
             </div>
 
-            {/* Explanation with line clamp - click card to expand */}
+            {/* Explanation */}
             {suggestion.explanation && (
-              <div
-                className={`text-sm text-gray-600 leading-snug ${
-                  isExpanded ? '' : 'line-clamp-2'
-                }`}
-              >
+              <div className="text-sm text-gray-600 leading-relaxed">
                 {suggestion.explanation}
               </div>
             )}
 
-            {/* Icon buttons - rectangular with borders */}
-            <div className="flex gap-2 justify-center" onClick={(e) => e.stopPropagation()}>
+            {/* Icon buttons - smaller with thinner rounded borders */}
+            <div className="flex gap-2 justify-center">
               <button
                 onClick={() => onAccept(suggestion.phrase, firstAlternative)}
-                className="px-3 py-2 text-green-600 bg-white hover:bg-green-50 border-2 border-green-500 rounded transition-all duration-200 flex items-center justify-center gap-1 group"
+                className="px-2 py-1.5 text-green-600 bg-white hover:bg-green-50 border border-green-500 rounded-md transition-all duration-200 flex items-center justify-center gap-1 group"
                 title="Accept"
               >
-                <svg className="w-5 h-5 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-4 h-4 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
                 </svg>
               </button>
               <button
                 onClick={() => onIgnore(suggestion.phrase)}
-                className="px-3 py-2 text-red-400 bg-white hover:bg-red-50 border-2 border-red-400 rounded transition-all duration-200 flex items-center justify-center gap-1 group"
+                className="px-2 py-1.5 text-red-400 bg-white hover:bg-red-50 border border-red-400 rounded-md transition-all duration-200 flex items-center justify-center gap-1 group"
                 title="Ignore"
               >
-                <svg className="w-5 h-5 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-4 h-4 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M6 18L18 6M6 6l12 12" />
                 </svg>
               </button>

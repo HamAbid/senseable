@@ -100,7 +100,7 @@ const UserAccountForm: React.FC<UserAccountFormProps> = ({ isLoginMode = false }
       country: 'uk',
       languagePreference: 'english',
       accessibilityCategory: 'hearing',
-      accessibilitySubOption: 'Hard of hearing',
+      accessibilitySubOption: 'Deaf',
       additionalSupport: '',
       color: '#06b6d4',
       bgColor: '#cffafe',
@@ -341,31 +341,28 @@ const UserAccountForm: React.FC<UserAccountFormProps> = ({ isLoginMode = false }
         <div className="min-h-screen flex">
           {/* Left Side - Personas */}
           <div className="w-1/2 bg-gradient-to-br from-blue-50 to-indigo-100 p-12 flex flex-col">
-            <div className="mb-12">
-              <h1 className="text-4xl font-bold text-blue-600 mb-3">
-                SenseAble
-              </h1>
-              <p className="text-base text-gray-700">
-                Empowering every user with personalized accessibility
-              </p>
-            </div>
-
             {/* Persona Cards - Centered */}
             <div className="flex-1 flex items-center justify-center">
               <div className="max-w-lg">
-                <div className="mb-6">
+                <div className="mb-8">
+                  <h1 className="text-4xl font-bold text-blue-600 mb-3">
+                    SenseAble
+                  </h1>
+                  <p className="text-base text-gray-700 mb-6">
+                    Empowering every user with personalized accessibility
+                  </p>
                   <h2 className="text-xl font-semibold text-gray-900">
                     Get started with these user personas
                   </h2>
                 </div>
                 
-                <div className="grid grid-cols-2 gap-4 mb-6">
+                <div className="grid grid-cols-2 gap-3 mb-6 max-w-md">
                   {personas.map((persona) => (
                     <button
                       key={persona.id}
                       type="button"
                       onClick={() => handlePersonaSelect(persona)}
-                      className={`bg-white rounded-2xl p-8 w-full aspect-square flex flex-col items-center justify-center transition-all duration-200 hover:shadow-lg ${
+                      className={`bg-white rounded-xl p-4 w-full aspect-square flex flex-col items-center justify-center transition-all duration-200 hover:shadow-lg ${
                         selectedPersona === persona.id
                           ? 'ring-4 shadow-xl'
                           : 'hover:scale-105'
@@ -377,15 +374,15 @@ const UserAccountForm: React.FC<UserAccountFormProps> = ({ isLoginMode = false }
                       }
                     >
                       <div
-                        className="rounded-full flex items-center justify-center mb-4 transition-colors"
+                        className="rounded-full flex items-center justify-center mb-2 transition-colors"
                         style={{
-                          width: '4.5rem',
-                          height: '4.5rem',
+                          width: '4rem',
+                          height: '4rem',
                           backgroundColor: selectedPersona === persona.id ? persona.color : persona.bgColor,
                         }}
                       >
                         <svg
-                          className="w-10 h-10"
+                          className="w-8 h-8"
                           style={{
                             color: selectedPersona === persona.id ? '#ffffff' : persona.color,
                           }}
@@ -402,13 +399,13 @@ const UserAccountForm: React.FC<UserAccountFormProps> = ({ isLoginMode = false }
                           />
                         </svg>
                       </div>
-                      <span className="text-lg font-semibold text-gray-900">{persona.name}</span>
+                      <span className="text-base font-semibold text-gray-900">{persona.name}</span>
                     </button>
                   ))}
                 </div>
 
                 {/* Warning Alert */}
-                <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 flex gap-3">
+                <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 flex gap-3 max-w-md">
                   <span className="text-yellow-600 text-lg flex-shrink-0">⚠️</span>
                   <p className="text-sm text-gray-700">
                     Please use the provided example personas to explore this demo. Due to internal security requirements, we're unable to host the models needed for a fully interactive experience.
@@ -445,6 +442,7 @@ const UserAccountForm: React.FC<UserAccountFormProps> = ({ isLoginMode = false }
                     placeholder="e.g., Ali"
                     className="w-full px-4 py-2.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-gray-50"
                     required
+                    disabled
                   />
                 </div>
 
@@ -460,6 +458,7 @@ const UserAccountForm: React.FC<UserAccountFormProps> = ({ isLoginMode = false }
                       onChange={(e) => setFormData({ ...formData, ageRange: e.target.value })}
                       className="w-full px-4 py-2.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-gray-50"
                       required
+                      disabled
                     >
                       <option value="">Select</option>
                       <option value="18-24">18–24</option>
@@ -480,6 +479,7 @@ const UserAccountForm: React.FC<UserAccountFormProps> = ({ isLoginMode = false }
                       onChange={(e) => setFormData({ ...formData, gender: e.target.value })}
                       className="w-full px-4 py-2.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-gray-50"
                       required
+                      disabled
                     >
                       <option value="">Select</option>
                       <option value="male">Male</option>
@@ -502,6 +502,7 @@ const UserAccountForm: React.FC<UserAccountFormProps> = ({ isLoginMode = false }
                       onChange={(e) => setFormData({ ...formData, country: e.target.value })}
                       className="w-full px-4 py-2.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-gray-50"
                       required
+                      disabled
                     >
                       <option value="">Select</option>
                       <option value="india">India</option>
@@ -523,6 +524,7 @@ const UserAccountForm: React.FC<UserAccountFormProps> = ({ isLoginMode = false }
                       onChange={(e) => setFormData({ ...formData, languagePreference: e.target.value })}
                       className="w-full px-4 py-2.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-gray-50"
                       required
+                      disabled
                     >
                       <option value="">Select</option>
                       <option value="english">English</option>
@@ -548,6 +550,7 @@ const UserAccountForm: React.FC<UserAccountFormProps> = ({ isLoginMode = false }
                             ? 'bg-blue-600 text-white shadow-md'
                             : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
                         }`}
+                        disabled
                       >
                         {option.label}
                       </button>
@@ -566,6 +569,7 @@ const UserAccountForm: React.FC<UserAccountFormProps> = ({ isLoginMode = false }
                           placeholder="Please specify..."
                           className="w-full px-4 py-2.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-gray-50"
                           required
+                          disabled
                         />
                       ) : (
                         <select
@@ -574,6 +578,7 @@ const UserAccountForm: React.FC<UserAccountFormProps> = ({ isLoginMode = false }
                           onChange={(e) => setFormData({ ...formData, accessibilitySubOption: e.target.value })}
                           className="w-full px-4 py-2.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-gray-50"
                           required
+                          disabled
                         >
                           <option value="">Select option</option>
                           {accessibilityOptions
@@ -599,8 +604,9 @@ const UserAccountForm: React.FC<UserAccountFormProps> = ({ isLoginMode = false }
                     value={formData.additionalSupport}
                     onChange={(e) => setFormData({ ...formData, additionalSupport: e.target.value })}
                     placeholder="Share any additional information..."
-                    rows={3}
+                    rows={1}
                     className="w-full px-4 py-2.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-gray-50 resize-none"
+                    disabled
                   />
                 </div>
 
